@@ -1,6 +1,6 @@
 # Chunker
 
-**TODO: Add description**
+A library to deal with files in chunks (e.g. chunked file upload).
 
 ## Installation
 

@@ -68,13 +68,20 @@ defmodule WriteableChunkedFileTest do
     assert {:ok, "world"} = File.read(@writeable_file_path)
   end
 
-  @tag :skip
   test "writeable?" do
-    assert false
+    chunked_file = new_chunked_file()
+    assert true = ChunkedFile.writeable?(chunked_file)
+  end
+
+  test "removing ChunkedFile" do
+    chunked_file = new_chunked_file()
+    
+    assert {:ok, _} = ChunkedFile.remove(chunked_file)
+    assert {:error, :enoent} = File.stat(chunked_file.chunked_path)
   end
 
   defp new_chunked_file() do
-    {:ok, chunked_file} = WriteableChunkedFile.new(@writeable_file_path)
+    {:ok, chunked_file} = Chunker.new(@writeable_file_path)
     chunked_file
   end
 

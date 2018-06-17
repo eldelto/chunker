@@ -1,21 +1,5 @@
 defmodule Chunker.WriteableChunkedFile do
   defstruct path: nil, chunked_path: nil, chunks: []
-
-  def new(path) do
-    with {:ok, chunked_path} <- mkdir_if_nonexistant(path <> ".chunked") do
-      {:ok, %__MODULE__{path: path, chunked_path: chunked_path, chunks: []}}
-    else
-      err -> err
-    end
-  end
-
-  defp mkdir_if_nonexistant(path) do
-    case File.mkdir(path) do
-      :ok -> {:ok, path}
-      {:error, :eexist} -> {:ok, path}
-      err -> err
-    end
-  end
 end
 
 defimpl Chunker.ChunkedFile, for: Chunker.WriteableChunkedFile do
@@ -74,6 +58,13 @@ defimpl Chunker.ChunkedFile, for: Chunker.WriteableChunkedFile do
 
   def chunk_path(chunked_file, chunk) do
     chunk_path(chunked_file, chunk.index)
+  end
+
+  def remove(chunked_file) do
+    case File.rm_rf(chunked_file.chunked_path) do
+      :ok -> {:ok, nil}
+      err -> err
+    end
   end
 
   defp get_file_stream(path) do

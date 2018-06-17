@@ -5,4 +5,5 @@ defprotocol Chunker.ChunkedFile do
   def commit(chunked_file)
   def writeable?(chunked_file)
   def chunk_path(chunked_file, chunk_or_index)
+  def remove(chunked_file)
 end
