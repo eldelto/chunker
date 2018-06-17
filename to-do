@@ -1,0 +1,5 @@
+- WriteableChunkedFile.
+- ChunkedFile.
+- Refactor to protocols.
+- Refactor to lazy streams.
+- Performance optimizations.
