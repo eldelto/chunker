@@ -1,9 +1,9 @@
 defprotocol Chunker.ChunkedFile do
   def add_chunk(chunked_file, data)
-  def remove_chunk(chunked_file, index)
-  def write_chunk(chunked_file, chunk)
+  #def insert_chunk(chunked_file, chunk, index)
+  def remove_chunk(chunked_file, index)  
   def commit(chunked_file)
-  def writeable?(chunked_file)
-  def chunk_path(chunked_file, chunk_or_index)
+  def writeable?(chunked_file)  
+  #def get_chunk(chunked_file, index)
   def remove(chunked_file)
 end

@@ -1,5 +1,13 @@
+V1
 # WriteableChunkedFile.
 - ReadonlyChunkedFile.
 # Refactor to protocols.
 - Refactor to lazy streams.
+
+V2
+- Typespecs.
+- Documentation.
+
+V3
+- Lock chunked file so only one can make changes to it?
 - Performance optimizations.

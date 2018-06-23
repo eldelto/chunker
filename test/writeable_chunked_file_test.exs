@@ -23,12 +23,6 @@ defmodule WriteableChunkedFileTest do
     assert %WriteableChunkedFile{} = new_chunked_file()
   end
 
-  test "get Chunk path" do
-    chunked_file = new_chunked_file()
-    chunk = new_chunk()
-    assert {:ok, @chunk_path} == ChunkedFile.chunk_path(chunked_file, chunk)
-  end
-
   test "adding chunks" do
     chunked_file = new_chunked_file()
 
@@ -36,19 +30,11 @@ defmodule WriteableChunkedFileTest do
     assert {:ok, chunked_file} = ChunkedFile.add_chunk(chunked_file, "test")
     assert 2 == length(chunked_file.chunks)
     assert {:ok, _} = File.stat(@chunk_path)
-    assert {:ok, _} = File.stat(@chunk_path_1)
+    assert {:ok, _} = File.stat(@chunk_path_1)    
+    assert {:ok, "0,1"} = File.read(chunk_map_path(chunked_file))
   end
 
-  test "writing chunks" do
-    chunked_file = new_chunked_file()
-    {:ok, chunk} = Chunk.new(0, "test")
-
-    assert {:ok, chunked_file} = ChunkedFile.write_chunk(chunked_file, chunk)
-    assert 1 == length(chunked_file.chunks)
-    assert {:ok, _} = File.stat(@chunk_path)
-  end
-
-  test "commiting ChunkedFile" do
+  test "committing ChunkedFile" do
     chunked_file = new_chunked_file()
 
     {:ok, chunked_file} = ChunkedFile.add_chunk(chunked_file, "hello ")
@@ -66,6 +52,7 @@ defmodule WriteableChunkedFileTest do
     assert {:ok, _} = ChunkedFile.remove_chunk(chunked_file, 0)
     {:ok, _} = ChunkedFile.commit(chunked_file)
     assert {:ok, "world"} = File.read(@writeable_file_path)
+    assert {:ok, "1"} = File.read(chunk_map_path(chunked_file))
   end
 
   test "writeable?" do
@@ -88,5 +75,9 @@ defmodule WriteableChunkedFileTest do
   defp new_chunk() do
     {:ok, chunk} = Chunk.new(0, "test")
     chunk
+  end
+
+  defp chunk_map_path(chunked_file) do
+    Path.join(chunked_file.chunked_path, "chunk_map")
   end
 end
