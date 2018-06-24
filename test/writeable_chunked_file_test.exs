@@ -1,7 +1,6 @@
 defmodule WriteableChunkedFileTest do
   use ExUnit.Case
 
-  alias Chunker.Chunk
   alias Chunker.ChunkedFile
   alias Chunker.WriteableChunkedFile
 
@@ -70,11 +69,6 @@ defmodule WriteableChunkedFileTest do
   defp new_chunked_file() do
     {:ok, chunked_file} = Chunker.new(@writeable_file_path)
     chunked_file
-  end
-
-  defp new_chunk() do
-    {:ok, chunk} = Chunk.new(0, "test")
-    chunk
   end
 
   defp chunk_map_path(chunked_file) do

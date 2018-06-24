@@ -3,9 +3,8 @@ defmodule Chunker.WriteableChunkedFile do
 end
 
 defimpl Chunker.ChunkedFile, for: Chunker.WriteableChunkedFile do
-  alias Chunker.Chunk
-
   def add_chunk(chunked_file, data) do
+    #TODO: Use stream instead of data
     index = next_chunk_index(chunked_file)
     chunk_path = chunk_path(chunked_file, index)
 
@@ -33,7 +32,7 @@ defimpl Chunker.ChunkedFile, for: Chunker.WriteableChunkedFile do
   end
 
   def commit(chunked_file) do
-    #TODO: add rescue block just in case
+    #TODO: Add rescue block just in case
     with {:ok, target} <- file_stream(chunked_file.path),
           :ok <- Stream.map(chunked_file.chunks, &(chunk_path(chunked_file, &1)))
                  |> Stream.flat_map(&(File.stream!(&1, [:read], 4096)))
