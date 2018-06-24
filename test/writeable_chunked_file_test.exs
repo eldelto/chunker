@@ -49,7 +49,7 @@ defmodule WriteableChunkedFileTest do
     {:ok, chunked_file} = ChunkedFile.add_chunk(chunked_file, "hello ")
     {:ok, chunked_file} = ChunkedFile.add_chunk(chunked_file, "world")
 
-    assert {:ok, _} = ChunkedFile.remove_chunk(chunked_file, 0)
+    assert {:ok, chunked_file} = ChunkedFile.remove_chunk(chunked_file, 0)    
     {:ok, _} = ChunkedFile.commit(chunked_file)
     assert {:ok, "world"} = File.read(@writeable_file_path)
     assert {:ok, "1"} = File.read(chunk_map_path(chunked_file))

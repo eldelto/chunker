@@ -26,7 +26,7 @@ defimpl Chunker.ChunkedFile, for: Chunker.WriteableChunkedFile do
          new_chunks <- List.delete_at(chunked_file.chunks, index),
          new_chunked_file = %{chunked_file | chunks: new_chunks},
          {:ok, _} <- write_chunk_map(new_chunked_file) do
-      {:ok, nil}
+      {:ok, new_chunked_file}
     else
       err -> err
     end
@@ -35,11 +35,10 @@ defimpl Chunker.ChunkedFile, for: Chunker.WriteableChunkedFile do
   def commit(chunked_file) do
     #TODO: add rescue block just in case
     with {:ok, target} <- file_stream(chunked_file.path),
-          {:ok, files} <-File.ls(chunked_file.chunked_path),
-          :ok <- Stream.map(files, &(Path.join(chunked_file.chunked_path, &1)))
-                |> Stream.flat_map(&(File.stream!(&1, [:read], 4096)))
-                |> Stream.into(target)
-                |> Stream.run() do
+          :ok <- Stream.map(chunked_file.chunks, &(chunk_path(chunked_file, &1)))
+                 |> Stream.flat_map(&(File.stream!(&1, [:read], 4096)))
+                 |> Stream.into(target)
+                 |> Stream.run() do          
       {:ok, chunked_file.path}            
     else
       err -> err
@@ -89,12 +88,15 @@ defimpl Chunker.ChunkedFile, for: Chunker.WriteableChunkedFile do
     Enum.max(chunked_file.chunks, fn -> -1 end) + 1
   end
 
-  defp chunk_path(chunked_file, index) do    
+  defp chunk_path(chunked_file, index) do 
+    #TODO: Return error when the index is not in chunks.
     Path.join(chunked_file.chunked_path, to_string(index) <> ".chunk")
   end
 
   defp mapped_chunk_path(chunked_file, index) do
-    mapped_index = Enum.find_index(chunked_file.chunks, &(&1 == index))
-    chunk_path(chunked_file, mapped_index)
+    case Enum.fetch(chunked_file.chunks, index) do
+      {:ok, chunk_index} -> chunk_path(chunked_file, chunk_index)
+      :error -> {:error, "The index does not point to a valid chunk."}
+    end    
   end
 end
