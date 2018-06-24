@@ -1,31 +1,29 @@
 defmodule Chunker.WriteableChunkedFile do
-  defstruct path: nil, chunked_path: nil, chunks: []
+  defstruct path: nil, chunked_path: nil
 end
 
 defimpl Chunker.ChunkedFile, for: Chunker.WriteableChunkedFile do
   def add_chunk(chunked_file, data) do
     #TODO: Use stream instead of data
-    index = next_chunk_index(chunked_file)
-    chunk_path = chunk_path(chunked_file, index)
-
-    with :ok <- File.write(chunk_path, data),
-          new_chunks <- chunked_file.chunks ++ [index],
-          new_chunked_file = %{chunked_file | chunks: new_chunks},
-          {:ok, _} <- write_chunk_map(new_chunked_file) do   
-      {:ok, new_chunked_file}
+    with {:ok, chunks} <- read_chunk_map(chunked_file),
+          index <- next_chunk_index(chunks),
+          chunk_path = chunk_path(chunked_file, index),
+          :ok <- File.write(chunk_path, data),
+          new_chunks <- chunks ++ [index],
+          {:ok, _} <- write_chunk_map(chunked_file, new_chunks) do   
+      {:ok, nil}
     else
       err -> err
     end
   end
 
   def remove_chunk(chunked_file, index) when is_integer(index) do
-    chunk_path = mapped_chunk_path(chunked_file, index)
-    IO.puts("removing" <> chunk_path)
-    with :ok <- File.rm(chunk_path),
-         new_chunks <- List.delete_at(chunked_file.chunks, index),
-         new_chunked_file = %{chunked_file | chunks: new_chunks},
-         {:ok, _} <- write_chunk_map(new_chunked_file) do
-      {:ok, new_chunked_file}
+    with {:ok, chunks} <- read_chunk_map(chunked_file),
+          chunk_path <- mapped_chunk_path(chunked_file, chunks, index),
+          :ok <- File.rm(chunk_path),
+          new_chunks <- List.delete_at(chunks, index),
+          {:ok, _} <- write_chunk_map(chunked_file, new_chunks) do
+      {:ok, nil}
     else
       err -> err
     end
@@ -34,7 +32,8 @@ defimpl Chunker.ChunkedFile, for: Chunker.WriteableChunkedFile do
   def commit(chunked_file) do
     #TODO: Add rescue block just in case
     with {:ok, target} <- file_stream(chunked_file.path),
-          :ok <- Stream.map(chunked_file.chunks, &(chunk_path(chunked_file, &1)))
+          {:ok, chunks} <- read_chunk_map(chunked_file),
+          :ok <- Stream.map(chunks, &(chunk_path(chunked_file, &1)))
                  |> Stream.flat_map(&(File.stream!(&1, [:read], 4096)))
                  |> Stream.into(target)
                  |> Stream.run() do          
@@ -63,8 +62,8 @@ defimpl Chunker.ChunkedFile, for: Chunker.WriteableChunkedFile do
     end
   end
 
-  defp write_chunk_map(chunked_file) do
-    content = Enum.join(chunked_file.chunks, ",")
+  defp write_chunk_map(chunked_file, chunks) do
+    content = Enum.join(chunks, ",")
     case File.write(chunk_map_path(chunked_file), content) do
       :ok -> {:ok, nil}
       err -> err
@@ -72,19 +71,19 @@ defimpl Chunker.ChunkedFile, for: Chunker.WriteableChunkedFile do
   end
 
   defp read_chunk_map(chunked_file) do
-    with {:ok, content} <- File.read(chunk_map_path(chunked_file)) do
-      {:ok, String.split(content, ",")}
-    else
+    #TODO: 
+    case File.read(chunk_map_path(chunked_file)) do
+      {:ok, content} -> string_to_integer_list(content)
       err -> err
-    end    
+    end
   end
 
   defp chunk_map_path(chunked_file) do
     Path.join(chunked_file.chunked_path, "chunk_map")
   end
 
-  defp next_chunk_index(chunked_file) do
-    Enum.max(chunked_file.chunks, fn -> -1 end) + 1
+  defp next_chunk_index(chunks) do
+    Enum.max(chunks, fn -> -1 end) + 1
   end
 
   defp chunk_path(chunked_file, index) do 
@@ -92,10 +91,33 @@ defimpl Chunker.ChunkedFile, for: Chunker.WriteableChunkedFile do
     Path.join(chunked_file.chunked_path, to_string(index) <> ".chunk")
   end
 
-  defp mapped_chunk_path(chunked_file, index) do
-    case Enum.fetch(chunked_file.chunks, index) do
+  defp mapped_chunk_path(chunked_file, chunks, index) do
+    case Enum.fetch(chunks, index) do
       {:ok, chunk_index} -> chunk_path(chunked_file, chunk_index)
       :error -> {:error, "The index does not point to a valid chunk."}
     end    
+  end
+
+  defp string_split(string, delimiter) do
+    case String.split(string, delimiter) do
+      [""] -> []
+      result -> result
+    end
+  end
+
+  defp string_to_integer_list(string) do
+    string_list = string_split(string, ",")
+    int_list = Enum.map(string_list, &(Integer.parse(&1)))
+    |> Enum.map(fn(x) -> case x do
+        {int, _} -> int
+        err -> err
+      end
+    end)
+
+    if Enum.any?(int_list, &(!is_integer(&1))) do
+      {:error, "Integer could not be parsed."}
+    else
+      {:ok, int_list}
+    end
   end
 end

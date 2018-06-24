@@ -17,8 +17,9 @@ defmodule Chunker do
   end
 
   defp new_writeable_chunked_file(path) do
-    with {:ok, chunked_path} <- mkdir_if_nonexistant(path <> ".chunked") do
-      {:ok, %Chunker.WriteableChunkedFile{path: path, chunked_path: chunked_path, chunks: []}}
+    with {:ok, chunked_path} <- mkdir_if_nonexistant(path <> ".chunked"),
+    {:ok, _} <- create_chunk_map(chunked_path) do
+      {:ok, %Chunker.WriteableChunkedFile{path: path, chunked_path: chunked_path}}
     else
       err -> err
     end
@@ -26,5 +27,13 @@ defmodule Chunker do
 
   defp new_read_only_chunked_file(path) do
     {:ok, %Chunker.ReadOnlyChunkedFile{path: path, chunks: []}}
+  end
+
+  defp create_chunk_map(path) do
+    chunk_map_path = Path.join(path, "chunk_map")
+    case File.touch(chunk_map_path) do
+      :ok -> {:ok, nil}
+      err -> err
+    end
   end
 end
