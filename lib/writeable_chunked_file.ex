@@ -29,6 +29,15 @@ defimpl Chunker.ChunkedFile, for: Chunker.WriteableChunkedFile do
     end
   end
 
+  def get_chunk(chunked_file, index) when is_integer(index) and index >= 0 do
+    with {:ok, chunks} <- read_chunk_map(chunked_file) do
+      chunk_path = mapped_chunk_path(chunked_file, chunks, index)
+      File.read(chunk_path)
+    else
+      err -> err
+    end
+  end
+
   def commit(chunked_file) do
     #TODO: Add rescue block just in case
     with {:ok, target} <- file_stream(chunked_file.path),

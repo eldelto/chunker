@@ -3,6 +3,7 @@ V1
 - ReadonlyChunkedFile.
 # Refactor to protocols.
 - Refactor to lazy streams.
+- Handle index out of range.
 
 V2
 - Typespecs.
