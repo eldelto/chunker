@@ -9,6 +9,7 @@ defmodule WriteableChunkedFileTest do
   @writeable_file_path "test/resources/tmp/chunked_file.txt"
   @chunk_path "test/resources/tmp/chunked_file.txt.chunked/0.chunk"
   @chunk_path_1 "test/resources/tmp/chunked_file.txt.chunked/1.chunk"
+  @chunk_path_2 "test/resources/tmp/chunked_file.txt.chunked/2.chunk"
 
   @tmp_path "test/resources/tmp/*"
 
@@ -22,11 +23,11 @@ defmodule WriteableChunkedFileTest do
     assert %WriteableChunkedFile{} = new_chunked_file()
   end
 
-  test "adding chunks" do
+  test "appending chunks" do
     chunked_file = new_chunked_file()
 
-    assert {:ok, _} = ChunkedFile.add_chunk(chunked_file, "test")
-    assert {:ok, _} = ChunkedFile.add_chunk(chunked_file, "test")
+    assert {:ok, _} = ChunkedFile.append_chunk(chunked_file, "test")
+    assert {:ok, _} = ChunkedFile.append_chunk(chunked_file, "test")
   
     assert {:ok, _} = File.stat(@chunk_path)
     assert {:ok, _} = File.stat(@chunk_path_1)    
@@ -36,17 +37,34 @@ defmodule WriteableChunkedFileTest do
   test "committing ChunkedFile" do
     chunked_file = new_chunked_file()
 
-    {:ok, _} = ChunkedFile.add_chunk(chunked_file, "hello ")
-    {:ok, _} = ChunkedFile.add_chunk(chunked_file, "world")
+    {:ok, _} = ChunkedFile.append_chunk(chunked_file, "hello ")
+    {:ok, _} = ChunkedFile.append_chunk(chunked_file, "world")
     assert {:ok, path} = ChunkedFile.commit(chunked_file)
     assert @writeable_file_path = path
     assert {:ok, "hello world"} = File.read(@writeable_file_path)
   end
 
+  test "inserting chunks" do
+    chunked_file = new_chunked_file()
+
+    assert {:ok, _} = ChunkedFile.append_chunk(chunked_file, "hello")
+    assert {:ok, _} = ChunkedFile.append_chunk(chunked_file, "world")
+    assert {:ok, _} = ChunkedFile.insert_chunk(chunked_file, " test ", 1)
+  
+    assert {:ok, _} = File.stat(@chunk_path)
+    assert {:ok, _} = File.stat(@chunk_path_1)
+    assert {:ok, _} = File.stat(@chunk_path_2)
+    assert {:ok, "0,2,1"} = File.read(chunk_map_path(chunked_file))
+
+    assert {:ok, path} = ChunkedFile.commit(chunked_file)
+    assert @writeable_file_path = path
+    assert {:ok, "hello test world"} = File.read(@writeable_file_path)
+  end
+
   test "removing chunks" do
     chunked_file = new_chunked_file()
-    {:ok, _} = ChunkedFile.add_chunk(chunked_file, "hello ")
-    {:ok, _} = ChunkedFile.add_chunk(chunked_file, "world")
+    {:ok, _} = ChunkedFile.append_chunk(chunked_file, "hello ")
+    {:ok, _} = ChunkedFile.append_chunk(chunked_file, "world")
 
     assert {:ok, _} = ChunkedFile.remove_chunk(chunked_file, 0)    
     {:ok, _} = ChunkedFile.commit(chunked_file)

@@ -3,21 +3,21 @@ defmodule Chunker.WriteableChunkedFile do
 end
 
 defimpl Chunker.ChunkedFile, for: Chunker.WriteableChunkedFile do
-  def add_chunk(chunked_file, data) do
+  def append_chunk(chunked_file, data) do
     #TODO: Use stream instead of data
-    with {:ok, chunks} <- read_chunk_map(chunked_file),
-          index <- next_chunk_index(chunks),
-          chunk_path = chunk_path(chunked_file, index),
-          :ok <- File.write(chunk_path, data),
-          new_chunks <- chunks ++ [index],
-          {:ok, _} <- write_chunk_map(chunked_file, new_chunks) do   
-      {:ok, nil}
-    else
-      err -> err
-    end
+    add_chunk(chunked_file, data, 0, fn(chunks, chunk_index, _) ->
+      chunks ++ [chunk_index]
+    end)  
   end
 
-  def remove_chunk(chunked_file, index) when is_integer(index) do
+  def insert_chunk(chunked_file, data, index) when is_integer(index) and index >= 0 do
+    #TODO: Use stream instead of data
+    add_chunk(chunked_file, data, index, fn(chunks, chunk_index, index) ->
+      List.insert_at(chunks, index, chunk_index)
+    end)
+  end
+
+  def remove_chunk(chunked_file, index) when is_integer(index) and index >= 0 do
     with {:ok, chunks} <- read_chunk_map(chunked_file),
           chunk_path <- mapped_chunk_path(chunked_file, chunks, index),
           :ok <- File.rm(chunk_path),
@@ -86,12 +86,12 @@ defimpl Chunker.ChunkedFile, for: Chunker.WriteableChunkedFile do
     Enum.max(chunks, fn -> -1 end) + 1
   end
 
-  defp chunk_path(chunked_file, index) do 
+  defp chunk_path(chunked_file, index) when is_integer(index) and index >= 0 do 
     #TODO: Return error when the index is not in chunks.
     Path.join(chunked_file.chunked_path, to_string(index) <> ".chunk")
   end
 
-  defp mapped_chunk_path(chunked_file, chunks, index) do
+  defp mapped_chunk_path(chunked_file, chunks, index) when is_integer(index) and index >= 0 do
     case Enum.fetch(chunks, index) do
       {:ok, chunk_index} -> chunk_path(chunked_file, chunk_index)
       :error -> {:error, "The index does not point to a valid chunk."}
@@ -118,6 +118,19 @@ defimpl Chunker.ChunkedFile, for: Chunker.WriteableChunkedFile do
       {:error, "Integer could not be parsed."}
     else
       {:ok, int_list}
+    end
+  end
+
+  defp add_chunk(chunked_file, data, index, chunk_map_modifier) when is_integer(index) do
+    with {:ok, chunks} <- read_chunk_map(chunked_file),
+          chunk_index <- next_chunk_index(chunks),
+          chunk_path = chunk_path(chunked_file, chunk_index),
+          :ok <- File.write(chunk_path, data),
+          new_chunks <- chunk_map_modifier.(chunks, chunk_index, index),
+          {:ok, _} <- write_chunk_map(chunked_file, new_chunks) do   
+      {:ok, nil}
+    else
+      err -> err
     end
   end
 end

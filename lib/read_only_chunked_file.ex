@@ -3,7 +3,11 @@ defmodule Chunker.ReadOnlyChunkedFile do
 end
 
 defimpl Chunker.ChunkedFile, for: Chunker.ReadOnlyChunkedFile do
-  def add_chunk(_, _) do
+  def append_chunk(_, _) do
+    not_writeable()
+  end
+
+  def insert_chunk(_, _, _) do
     not_writeable()
   end
 
