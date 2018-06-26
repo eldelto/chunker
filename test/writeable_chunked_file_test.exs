@@ -83,7 +83,7 @@ defmodule WriteableChunkedFileTest do
 
   test "writeable?" do
     chunked_file = new_chunked_file()
-    assert true = ChunkedFile.writeable?(chunked_file)
+    assert true === ChunkedFile.writeable?(chunked_file)
   end
 
   test "removing ChunkedFile" do

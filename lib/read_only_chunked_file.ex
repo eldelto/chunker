@@ -1,5 +1,5 @@
 defmodule Chunker.ReadOnlyChunkedFile do
-  defstruct path: nil, chunks: []
+  defstruct path: nil, chunks: [], chunk_size: 4
 end
 
 defimpl Chunker.ChunkedFile, for: Chunker.ReadOnlyChunkedFile do
@@ -13,6 +13,10 @@ defimpl Chunker.ChunkedFile, for: Chunker.ReadOnlyChunkedFile do
 
   def remove_chunk(_, _) do
     not_writeable()
+  end
+
+  def get_chunk(chunked_file, index) when is_integer(index) and index >= 0 do
+    
   end
 
   def commit(_) do

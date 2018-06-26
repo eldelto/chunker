@@ -2,10 +2,10 @@ V1
 # WriteableChunkedFile.
 - ReadonlyChunkedFile.
 # Refactor to protocols.
-- Refactor to lazy streams.
 - Handle index out of range.
 
 V2
+- Refactor to lazy streams.
 - Typespecs.
 - Documentation.
 
