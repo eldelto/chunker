@@ -3,6 +3,8 @@ defmodule Chunker.ReadOnlyChunkedFile do
 end
 
 defimpl Chunker.ChunkedFile, for: Chunker.ReadOnlyChunkedFile do
+  alias Chunker.Helper
+
   def append_chunk(_, _) do
     not_writeable()
   end
@@ -16,7 +18,12 @@ defimpl Chunker.ChunkedFile, for: Chunker.ReadOnlyChunkedFile do
   end
 
   def get_chunk(chunked_file, index) when is_integer(index) and index >= 0 do
-    
+    chunk_size = chunked_file.chunk_size
+    with {:ok, io_device} <- :file.open(chunked_file.path, [:read, :binary]) do
+      :file.pread(io_device, {:bof, index * chunk_size}, chunk_size)
+    else
+      err -> err
+    end
   end
 
   def commit(_) do
