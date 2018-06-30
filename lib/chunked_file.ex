@@ -7,5 +7,6 @@ defprotocol Chunker.ChunkedFile do
   def writeable?(chunked_file)
   def get_chunk(chunked_file, index)
   #def get_chunks(chunked_file)
+  #def path(chunked_file)  
   def remove(chunked_file)
 end
