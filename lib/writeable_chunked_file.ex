@@ -31,13 +31,17 @@ defimpl Chunker.ChunkedFile, for: Chunker.WriteableChunkedFile do
     end
   end
 
-  def get_chunk(chunked_file, index) when is_integer(index) and index >= 0 do
+  def chunk(chunked_file, index) when is_integer(index) and index >= 0 do
     with {:ok, chunks} <- Helper.read_chunk_map(chunked_file) do
       chunk_path = Helper.mapped_chunk_path(chunked_file, chunks, index)
       File.read(chunk_path)
     else
       err -> err
     end
+  end
+
+  def chunks(chunked_file) do
+    Helper.read_chunk_map(chunked_file)
   end
 
   def commit(chunked_file) do

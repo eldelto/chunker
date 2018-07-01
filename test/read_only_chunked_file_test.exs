@@ -26,20 +26,27 @@ defmodule ReadOnlyChunkedFileTest do
     assert read_only?(ChunkedFile.commit(chunked_file))
   end
 
-  test "inserting chunks" do
+  test "inserting chunk" do
     chunked_file = new_chunked_file()
     assert read_only?(ChunkedFile.insert_chunk(chunked_file, nil, 0))
   end
 
-  test "getting chunks" do
+  test "getting chunk" do
     chunked_file = new_chunked_file()
     
-    assert {:ok, "This"} = ChunkedFile.get_chunk(chunked_file, 0)
-    assert {:ok, " is "} = ChunkedFile.get_chunk(chunked_file, 1)
-    assert {:ok, "a te"} = ChunkedFile.get_chunk(chunked_file, 2)
+    assert {:ok, "This"} = ChunkedFile.chunk(chunked_file, 0)
+    assert {:ok, " is "} = ChunkedFile.chunk(chunked_file, 1)
+    assert {:ok, "a te"} = ChunkedFile.chunk(chunked_file, 2)
   end
 
-  test "removing chunks" do
+  test "getting chunk list" do
+    chunked_file = new_chunked_file()
+
+    assert {:ok, chunks} = ChunkedFile.chunks(chunked_file)
+    assert 15 == length(chunks)
+  end
+
+  test "removing chunk" do
     chunked_file = new_chunked_file()
     assert read_only?(ChunkedFile.remove_chunk(chunked_file, 0))
   end

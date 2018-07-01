@@ -26,7 +26,7 @@ defmodule Chunker do
   end
 
   defp new_read_only_chunked_file(path) do
-    {:ok, %Chunker.ReadOnlyChunkedFile{path: path, chunks: []}}
+    {:ok, %Chunker.ReadOnlyChunkedFile{path: path}}
   end
 
   defp create_chunk_map(path) do
