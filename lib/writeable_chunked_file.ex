@@ -21,7 +21,7 @@ defimpl Chunker.ChunkedFile, for: Chunker.WriteableChunkedFile do
 
   def remove_chunk(chunked_file, index) when is_integer(index) and index >= 0 do
     with {:ok, chunks} <- Helper.read_chunk_map(chunked_file),
-          chunk_path <- Helper.mapped_chunk_path(chunked_file, chunks, index),
+          {:ok, chunk_path} <- Helper.mapped_chunk_path(chunked_file, chunks, index),
           :ok <- File.rm(chunk_path),
           new_chunks <- List.delete_at(chunks, index),
           {:ok, _} <- Helper.write_chunk_map(chunked_file, new_chunks) do
@@ -32,8 +32,8 @@ defimpl Chunker.ChunkedFile, for: Chunker.WriteableChunkedFile do
   end
 
   def chunk(chunked_file, index) when is_integer(index) and index >= 0 do
-    with {:ok, chunks} <- Helper.read_chunk_map(chunked_file) do
-      chunk_path = Helper.mapped_chunk_path(chunked_file, chunks, index)
+    with {:ok, chunks} <- Helper.read_chunk_map(chunked_file),
+          {:ok, chunk_path} = Helper.mapped_chunk_path(chunked_file, chunks, index) do
       File.read(chunk_path)
     else
       err -> err

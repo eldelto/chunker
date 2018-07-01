@@ -39,7 +39,7 @@ defmodule Chunker.Helper do
 
   def mapped_chunk_path(chunked_file, chunks, index) when is_integer(index) and index >= 0 do
     case Enum.fetch(chunks, index) do
-      {:ok, chunk_index} -> chunk_path(chunked_file, chunk_index)
+      {:ok, chunk_index} -> {:ok, chunk_path(chunked_file, chunk_index)}
       :error -> {:error, "The index does not point to a valid chunk."}
     end    
   end
