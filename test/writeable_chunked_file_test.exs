@@ -68,6 +68,7 @@ defmodule WriteableChunkedFileTest do
     {:ok, _} = ChunkedFile.append_chunk(chunked_file, "world")
   
     assert {:ok, "world"} = ChunkedFile.chunk(chunked_file, 1)
+    assert {:error, _} = ChunkedFile.chunk(chunked_file, 100)
   end
 
   test "getting chunk list" do

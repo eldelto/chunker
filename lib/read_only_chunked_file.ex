@@ -19,9 +19,11 @@ defimpl Chunker.ChunkedFile, for: Chunker.ReadOnlyChunkedFile do
 
   def chunk(chunked_file, index) when is_integer(index) and index >= 0 do
     chunk_size = chunked_file.chunk_size
-    with {:ok, io_device} <- :file.open(chunked_file.path, [:read, :binary]) do
-      :file.pread(io_device, {:bof, index * chunk_size}, chunk_size)
+    with {:ok, io_device} <- :file.open(chunked_file.path, [:read, :binary]),
+          {:ok, data} <- :file.pread(io_device, {:bof, index * chunk_size}, chunk_size) do
+      {:ok, data}
     else
+      :eof -> {:error, :eof}
       err -> err
     end
   end
@@ -31,7 +33,6 @@ defimpl Chunker.ChunkedFile, for: Chunker.ReadOnlyChunkedFile do
       {:ok, %{size: size}} -> number_of_chunks = size / chunked_file.chunk_size
                               number_of_chunks = trunc(Float.ceil(number_of_chunks))
                               {:ok, Enum.to_list(1..number_of_chunks)}
-      
       err -> err
     end
   end

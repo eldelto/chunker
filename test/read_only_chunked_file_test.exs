@@ -37,6 +37,7 @@ defmodule ReadOnlyChunkedFileTest do
     assert {:ok, "This"} = ChunkedFile.chunk(chunked_file, 0)
     assert {:ok, " is "} = ChunkedFile.chunk(chunked_file, 1)
     assert {:ok, "a te"} = ChunkedFile.chunk(chunked_file, 2)
+    assert {:error, _} = ChunkedFile.chunk(chunked_file, 100)
   end
 
   test "getting chunk list" do
