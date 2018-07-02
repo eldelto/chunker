@@ -57,6 +57,11 @@ defmodule ReadOnlyChunkedFileTest do
     assert false == ChunkedFile.writeable?(chunked_file)
   end
 
+  test "path" do
+    chunked_file = new_chunked_file()
+    assert @readable_file_path = ChunkedFile.path(chunked_file)
+  end
+
   test "removing ChunkedFile" do
     chunked_file = new_chunked_file()
     assert read_only?(ChunkedFile.remove(chunked_file))

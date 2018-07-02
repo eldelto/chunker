@@ -59,6 +59,8 @@ defimpl Chunker.ChunkedFile, for: Chunker.WriteableChunkedFile do
   end
 
   def writeable?(_), do: true
+
+  def path(chunked_file), do: chunked_file.path
   
   def remove(chunked_file) do
     case File.rm_rf(chunked_file.chunked_path) do

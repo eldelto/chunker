@@ -2,9 +2,7 @@ defmodule Chunker.ReadOnlyChunkedFile do
   defstruct path: nil, chunk_size: 4
 end
 
-defimpl Chunker.ChunkedFile, for: Chunker.ReadOnlyChunkedFile do
-  alias Chunker.Helper
-
+defimpl Chunker.ChunkedFile, for: Chunker.ReadOnlyChunkedFile do  
   def append_chunk(_, _) do
     not_writeable()
   end
@@ -43,6 +41,8 @@ defimpl Chunker.ChunkedFile, for: Chunker.ReadOnlyChunkedFile do
 
   def writeable?(_), do: false
   
+  def path(chunked_file), do: chunked_file.path
+
   def remove(_) do
     not_writeable()
   end
