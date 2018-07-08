@@ -1,7 +1,7 @@
 defmodule Chunker do
-  def new(path) do
+  def new(path, chunk_size \\ 1024 * 1024) do
     case File.stat(path) do
-      {:ok, _} -> new_read_only_chunked_file(path)
+      {:ok, _} -> new_read_only_chunked_file(path, chunk_size)
       {:error, :enoent} -> new_writeable_chunked_file(path)
       err -> err
     end
@@ -25,8 +25,8 @@ defmodule Chunker do
     end
   end
 
-  defp new_read_only_chunked_file(path) do
-    {:ok, %Chunker.ReadOnlyChunkedFile{path: path}}
+  defp new_read_only_chunked_file(path, chunk_size) do
+    {:ok, %Chunker.ReadOnlyChunkedFile{path: path, chunk_size: chunk_size}}
   end
 
   defp create_chunk_map(path) do

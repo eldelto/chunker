@@ -68,7 +68,7 @@ defmodule ReadOnlyChunkedFileTest do
   end
 
   defp new_chunked_file() do
-    {:ok, chunked_file} = Chunker.new(@readable_file_path)
+    {:ok, chunked_file} = Chunker.new(@readable_file_path, 4)
     chunked_file
   end
 

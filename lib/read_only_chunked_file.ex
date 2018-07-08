@@ -1,5 +1,5 @@
 defmodule Chunker.ReadOnlyChunkedFile do
-  defstruct path: nil, chunk_size: 4
+  defstruct path: nil, chunk_size: 1024 * 1024
 end
 
 defimpl Chunker.ChunkedFile, for: Chunker.ReadOnlyChunkedFile do  
