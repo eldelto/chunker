@@ -15,10 +15,11 @@ defimpl Chunker.ChunkedFile, for: Chunker.ReadOnlyChunkedFile do
     not_writeable()
   end
 
-  def chunk(chunked_file, index) when is_integer(index) and index >= 0 do
+  def chunk(chunked_file, index) when is_integer(index) and index >= 0 do    
     chunk_size = chunked_file.chunk_size
-    with {:ok, io_device} <- :file.open(chunked_file.path, [:read, :binary]),
-          {:ok, data} <- :file.pread(io_device, {:bof, index * chunk_size}, chunk_size) do
+    with {:ok, io_device} <- :file.open(chunked_file.path, [:read, :binary, :raw]),
+          {:ok, data} <- :file.pread(io_device, index * chunk_size, chunk_size),
+          :ok <- :file.close(io_device) do
       {:ok, data}
     else
       :eof -> {:error, :eof}
