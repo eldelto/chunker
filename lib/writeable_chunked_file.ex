@@ -51,7 +51,8 @@ defimpl Chunker.ChunkedFile, for: Chunker.WriteableChunkedFile do
           :ok <- Stream.map(chunks, &(Helper.chunk_path(chunked_file, &1)))
                  |> Stream.flat_map(&(File.stream!(&1, [:read], 4096)))
                  |> Stream.into(target)
-                 |> Stream.run() do          
+                 |> Stream.run(),
+          {:ok, _} <- remove(chunked_file) do          
       {:ok, chunked_file.path}            
     else
       err -> err

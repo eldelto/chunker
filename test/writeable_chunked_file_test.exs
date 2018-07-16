@@ -42,6 +42,7 @@ defmodule WriteableChunkedFileTest do
     assert {:ok, path} = ChunkedFile.commit(chunked_file)
     assert @writeable_file_path = path
     assert {:ok, "hello world"} = File.read(@writeable_file_path)
+    assert {:error, :enoent} = File.lstat(@writeable_file_path <> ".chunked")
   end
 
   test "inserting chunk" do
@@ -86,10 +87,10 @@ defmodule WriteableChunkedFileTest do
     {:ok, _} = ChunkedFile.append_chunk(chunked_file, "hello ")
     {:ok, _} = ChunkedFile.append_chunk(chunked_file, "world")
 
-    assert {:ok, _} = ChunkedFile.remove_chunk(chunked_file, 0)    
-    {:ok, _} = ChunkedFile.commit(chunked_file)
-    assert {:ok, "world"} = File.read(@writeable_file_path)
+    assert {:ok, _} = ChunkedFile.remove_chunk(chunked_file, 0)
     assert {:ok, "1"} = File.read(chunk_map_path(chunked_file))
+    {:ok, _} = ChunkedFile.commit(chunked_file)
+    assert {:ok, "world"} = File.read(@writeable_file_path)    
   end
 
   test "writeable?" do
