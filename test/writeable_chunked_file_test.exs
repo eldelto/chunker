@@ -110,6 +110,28 @@ defmodule WriteableChunkedFileTest do
     assert {:error, :enoent} = File.stat(chunked_file.chunked_path)
   end
 
+  test "appending chunks with id" do
+    chunked_file = new_chunked_file()
+
+    assert {:ok, _} = WriteableChunkedFile.append_chunk(chunked_file, "test", 2)
+    assert {:ok, _} = WriteableChunkedFile.append_chunk(chunked_file, "test", 1)
+  
+    assert {:ok, _} = File.stat(@chunk_path_2)
+    assert {:ok, _} = File.stat(@chunk_path_1)    
+    assert {:ok, "2,1"} = File.read(chunk_map_path(chunked_file))
+  end
+
+  test "committing ChunkedFile with mapping function" do
+    chunked_file = new_chunked_file()
+
+    {:ok, _} = ChunkedFile.append_chunk(chunked_file, " hello")
+    {:ok, _} = ChunkedFile.append_chunk(chunked_file, "world")
+    assert {:ok, path} = WriteableChunkedFile.commit(chunked_file, &Enum.reverse/1)
+    assert @writeable_file_path = path
+    assert {:ok, "world hello"} = File.read(@writeable_file_path)
+    assert {:error, :enoent} = File.lstat(@writeable_file_path <> ".chunked")
+  end
+
   defp new_chunked_file() do
     {:ok, chunked_file} = Chunker.new(@writeable_file_path)
     chunked_file

@@ -1,5 +1,37 @@
 defmodule Chunker.WriteableChunkedFile do
+  alias Chunker.ChunkedFile
+  alias Chunker.Helper
+
   defstruct path: nil, chunked_path: nil
+
+  def append_chunk(chunked_file, data, chunk_id) do
+    #TODO: Use stream instead of data
+    with {:ok, chunks} <- Helper.read_chunk_map(chunked_file),          
+          chunk_path = Helper.chunk_path(chunked_file, chunk_id),
+          :ok <- File.write(chunk_path, data),
+          new_chunks <- chunks ++ [chunk_id],
+          {:ok, _} <- Helper.write_chunk_map(chunked_file, new_chunks) do   
+      {:ok, nil}
+    else
+      err -> err
+    end  
+  end
+
+  def commit(chunked_file, mapping_fn) do
+    #TODO: Add rescue block just in case
+    with {:ok, target} <- Helper.file_stream(chunked_file.path),
+          {:ok, chunks} <- Helper.read_chunk_map(chunked_file),
+          chunks <- mapping_fn.(chunks),
+          :ok <- Stream.map(chunks, &(Helper.chunk_path(chunked_file, &1)))
+                 |> Stream.flat_map(&(File.stream!(&1, [:read], 4096)))
+                 |> Stream.into(target)
+                 |> Stream.run(),
+          {:ok, _} <- ChunkedFile.remove(chunked_file) do          
+      {:ok, chunked_file.path}
+    else
+      err -> err
+    end
+  end
 end
 
 defimpl Chunker.ChunkedFile, for: Chunker.WriteableChunkedFile do
@@ -68,5 +100,5 @@ defimpl Chunker.ChunkedFile, for: Chunker.WriteableChunkedFile do
       :ok -> {:ok, nil}
       err -> err
     end
-  end
+  end  
 end
