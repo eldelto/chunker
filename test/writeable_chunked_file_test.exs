@@ -117,6 +117,15 @@ defmodule WriteableChunkedFileTest do
     assert {:error, "Already closed."} = ChunkedFile.append_chunk(chunked_file, "hello")
   end
 
+  test "closed?" do
+    chunked_file = new_chunked_file()
+
+    assert false === ChunkedFile.closed?(chunked_file)
+
+    :ok = ChunkedFile.close(chunked_file)
+    assert true === ChunkedFile.closed?(chunked_file)
+  end
+
   defp new_chunked_file() do
     {:ok, chunked_file} = Chunker.new(@writeable_file_path)
     chunked_file

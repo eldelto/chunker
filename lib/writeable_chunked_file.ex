@@ -73,6 +73,10 @@ defmodule Chunker.WriteableChunkedFile do
     end
   end
 
+  def closed?(chunked_file) do
+    !Process.alive?(chunked_file.pid)
+  end
+
   ## Server ##
   def init(:ok) do
     {:ok, nil}
@@ -194,5 +198,9 @@ defimpl Chunker.ChunkedFile, for: Chunker.WriteableChunkedFile do
   
   def close(chunked_file) do
     WriteableChunkedFile.close(chunked_file)
+  end
+
+  def closed?(chunked_file) do
+    WriteableChunkedFile.closed?(chunked_file)
   end
 end

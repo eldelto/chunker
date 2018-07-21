@@ -56,6 +56,8 @@ defimpl Chunker.ChunkedFile, for: Chunker.ReadOnlyChunkedFile do
     not_writeable()
   end
 
+  def closed?(_), do: false
+
   ## Helper functions ##
   defp not_writeable(), do: {:error, "This ChunkedFile is read-only."}
 end

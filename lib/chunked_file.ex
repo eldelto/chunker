@@ -10,4 +10,5 @@ defprotocol Chunker.ChunkedFile do
   def path(chunked_file)  
   def remove(chunked_file)
   def close(chunked_file)
+  def closed?(chunked_file)
 end
