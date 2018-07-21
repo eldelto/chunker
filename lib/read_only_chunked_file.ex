@@ -1,5 +1,9 @@
 defmodule Chunker.ReadOnlyChunkedFile do
   defstruct path: nil, chunk_size: 1024 * 1024
+
+  def new(path, chunk_size) do
+    {:ok, %Chunker.ReadOnlyChunkedFile{path: path, chunk_size: chunk_size}}
+  end
 end
 
 defimpl Chunker.ChunkedFile, for: Chunker.ReadOnlyChunkedFile do  
@@ -45,6 +49,10 @@ defimpl Chunker.ChunkedFile, for: Chunker.ReadOnlyChunkedFile do
   def path(chunked_file), do: chunked_file.path
 
   def remove(_) do
+    not_writeable()
+  end
+
+  def close(_) do
     not_writeable()
   end
 

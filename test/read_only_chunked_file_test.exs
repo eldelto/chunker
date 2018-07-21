@@ -67,6 +67,11 @@ defmodule ReadOnlyChunkedFileTest do
     assert read_only?(ChunkedFile.remove(chunked_file))
   end
 
+  test "closing ChunkedFile" do
+    chunked_file = new_chunked_file()
+    assert read_only?(ChunkedFile.close(chunked_file))
+  end
+
   defp new_chunked_file() do
     {:ok, chunked_file} = Chunker.new(@readable_file_path, 4)
     chunked_file
