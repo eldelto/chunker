@@ -5,11 +5,8 @@ V1
 - Handle index out of range.
 
 V2
+- Use :ok instead of {:ok, nil}
 - Use custom exceptions in error tuple.
 - Refactor to lazy streams.
 - Typespecs.
 - Documentation.
-
-V3
-- Lock chunked file so only one can make changes to it?
-- Performance optimizations.
