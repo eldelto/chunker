@@ -4,7 +4,7 @@ defmodule Chunker.MixProject do
   def project do
     [
       app: :chunker,
-      version: "0.1.0",
+      version: "0.4.0",
       elixir: "~> 1.6",
       start_permanent: Mix.env() == :prod,
       deps: deps()
@@ -21,7 +21,8 @@ defmodule Chunker.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:mix_test_watch, "~> 0.6", only: :dev, runtime: false}
+      {:mix_test_watch, "~> 0.6", only: :dev, runtime: false},
+      {:dialyxir, "~> 0.5.1", only: :dev, runtime: false}
     ]
   end
 end

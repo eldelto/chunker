@@ -61,7 +61,7 @@ defmodule Chunker.WriteableChunkedFile do
   
   def delete(chunked_file) do    
     case File.rm_rf(chunked_file.chunked_path) do
-      :ok -> {:ok, nil}
+      {:ok, _} -> {:ok, nil}
       err -> err
     end
   end
