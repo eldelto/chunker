@@ -1,5 +1,5 @@
 defprotocol Chunker.ChunkedFile do  
-  @type path :: string
+  @type path :: String.t()
   @type chunk :: any
   @type reason :: any
   @type error :: {:error, reason}
