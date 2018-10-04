@@ -5,9 +5,8 @@ defmodule Chunker do
       {:error, :enoent} -> new_writeable_chunked_file(path)
       err -> err
     end
-    
   end
-  
+
   defp new_writeable_chunked_file(path) do
     Chunker.WriteableChunkedFile.new(path)
   end

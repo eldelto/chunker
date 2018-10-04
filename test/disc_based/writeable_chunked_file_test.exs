@@ -28,9 +28,9 @@ defmodule WriteableChunkedFileTest do
 
     assert {:ok, _} = ChunkedFile.append_chunk(chunked_file, "test")
     assert {:ok, _} = ChunkedFile.append_chunk(chunked_file, "test")
-  
+
     assert {:ok, _} = File.stat(@chunk_path)
-    assert {:ok, _} = File.stat(@chunk_path_1)    
+    assert {:ok, _} = File.stat(@chunk_path_1)
     assert {:ok, "0,1"} = File.read(chunk_map_path(chunked_file))
   end
 
@@ -51,7 +51,7 @@ defmodule WriteableChunkedFileTest do
     assert {:ok, _} = ChunkedFile.append_chunk(chunked_file, "hello")
     assert {:ok, _} = ChunkedFile.append_chunk(chunked_file, "world")
     assert {:ok, _} = ChunkedFile.insert_chunk(chunked_file, " test ", 1)
-  
+
     assert {:ok, _} = File.stat(@chunk_path)
     assert {:ok, _} = File.stat(@chunk_path_1)
     assert {:ok, _} = File.stat(@chunk_path_2)
@@ -67,7 +67,7 @@ defmodule WriteableChunkedFileTest do
 
     {:ok, _} = ChunkedFile.append_chunk(chunked_file, "hello")
     {:ok, _} = ChunkedFile.append_chunk(chunked_file, "world")
-  
+
     assert {:ok, "world"} = ChunkedFile.chunk(chunked_file, 1)
     assert {:error, _} = ChunkedFile.chunk(chunked_file, 100)
   end
@@ -77,7 +77,7 @@ defmodule WriteableChunkedFileTest do
 
     {:ok, _} = ChunkedFile.append_chunk(chunked_file, "hello")
     {:ok, _} = ChunkedFile.append_chunk(chunked_file, "world")
-  
+
     assert {:ok, chunks} = ChunkedFile.chunks(chunked_file)
     assert 2 == length(chunks)
   end
@@ -90,7 +90,7 @@ defmodule WriteableChunkedFileTest do
     assert {:ok, _} = ChunkedFile.remove_chunk(chunked_file, 0)
     assert {:ok, "1"} = File.read(chunk_map_path(chunked_file))
     {:ok, _} = ChunkedFile.commit(chunked_file)
-    assert {:ok, "world"} = File.read(@writeable_file_path)    
+    assert {:ok, "world"} = File.read(@writeable_file_path)
   end
 
   test "writeable?" do
@@ -105,7 +105,7 @@ defmodule WriteableChunkedFileTest do
 
   test "removing ChunkedFile" do
     chunked_file = new_chunked_file()
-    
+
     assert :ok = ChunkedFile.remove(chunked_file)
     assert {:error, :enoent} = File.stat(chunked_file.chunked_path)
   end

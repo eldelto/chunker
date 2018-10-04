@@ -1,4 +1,4 @@
-defprotocol Chunker.ChunkedFile do  
+defprotocol Chunker.ChunkedFile do
   @type path :: String.t()
   @type chunk :: any
   @type reason :: any
@@ -14,7 +14,7 @@ defprotocol Chunker.ChunkedFile do
   @spec remove_chunk(t, integer) :: result
   def remove_chunk(chunked_file, index)
 
-  #def replace_chunk(chunked_file, data, index)
+  # def replace_chunk(chunked_file, data, index)
 
   @spec commit(t) :: path | error
   def commit(chunked_file)
@@ -29,7 +29,7 @@ defprotocol Chunker.ChunkedFile do
   def chunks(chunked_file)
 
   @spec path(t) :: path | error
-  def path(chunked_file)  
+  def path(chunked_file)
 
   @spec remove(t) :: :ok | error
   def remove(chunked_file)

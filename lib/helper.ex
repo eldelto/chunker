@@ -10,6 +10,7 @@ defmodule Chunker.Helper do
 
   def write_chunk_map(chunked_file, chunks) do
     content = Enum.join(chunks, ",")
+
     case File.write(chunk_map_path(chunked_file), content) do
       :ok -> {:ok, nil}
       err -> err
@@ -17,7 +18,7 @@ defmodule Chunker.Helper do
   end
 
   def read_chunk_map(chunked_file) do
-    #TODO: 
+    # TODO: 
     case File.read(chunk_map_path(chunked_file)) do
       {:ok, content} -> string_to_integer_list(content)
       err -> err
@@ -32,8 +33,8 @@ defmodule Chunker.Helper do
     Enum.max(chunks, fn -> -1 end) + 1
   end
 
-  def chunk_path(chunked_file, index) when is_integer(index) and index >= 0 do 
-    #TODO: Return error when the index is not in chunks.
+  def chunk_path(chunked_file, index) when is_integer(index) and index >= 0 do
+    # TODO: Return error when the index is not in chunks.
     Path.join(chunked_file.chunked_path, to_string(index) <> ".chunk")
   end
 
@@ -41,7 +42,7 @@ defmodule Chunker.Helper do
     case Enum.fetch(chunks, index) do
       {:ok, chunk_index} -> {:ok, chunk_path(chunked_file, chunk_index)}
       :error -> {:error, "The index does not point to a valid chunk."}
-    end    
+    end
   end
 
   def string_split(string, delimiter) do
@@ -53,12 +54,15 @@ defmodule Chunker.Helper do
 
   def string_to_integer_list(string) do
     string_list = string_split(string, ",")
-    int_list = Enum.map(string_list, &(Integer.parse(&1)))
-    |> Enum.map(fn(x) -> case x do
-        {int, _} -> int
-        err -> err
-      end
-    end)
+
+    int_list =
+      Enum.map(string_list, &Integer.parse(&1))
+      |> Enum.map(fn x ->
+        case x do
+          {int, _} -> int
+          err -> err
+        end
+      end)
 
     if Enum.any?(int_list, &(!is_integer(&1))) do
       {:error, "Integer could not be parsed."}
@@ -69,11 +73,11 @@ defmodule Chunker.Helper do
 
   def add_chunk(chunked_file, data, index, chunk_map_modifier) when is_integer(index) do
     with {:ok, chunks} <- read_chunk_map(chunked_file),
-          chunk_index <- next_chunk_index(chunks),
-          chunk_path = chunk_path(chunked_file, chunk_index),
-          :ok <- File.write(chunk_path, data),
-          new_chunks <- chunk_map_modifier.(chunks, chunk_index, index),
-          {:ok, _} <- write_chunk_map(chunked_file, new_chunks) do   
+         chunk_index <- next_chunk_index(chunks),
+         chunk_path = chunk_path(chunked_file, chunk_index),
+         :ok <- File.write(chunk_path, data),
+         new_chunks <- chunk_map_modifier.(chunks, chunk_index, index),
+         {:ok, _} <- write_chunk_map(chunked_file, new_chunks) do
       {:ok, nil}
     else
       err -> err

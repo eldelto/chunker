@@ -7,7 +7,7 @@ V1
 V2
 # Use :ok instead of {:ok, nil}.
 # Use defdelegate where possible.
-- Merge Helper with WriteableChunkedFile.
+# Move implementations into new directory.
 - Rename WriteableChunkedFile to WriteableFile.
 - Rename ReadonlyChunkedFile to ReadonlyFile.
 - Add linter and hexdocs to deps.
