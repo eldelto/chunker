@@ -1,17 +1,25 @@
 defmodule Chunker do
-  def new(path, chunk_size \\ 1024 * 1024) do
-    case File.stat(path) do
-      {:ok, _} -> new_read_only_chunked_file(path, chunk_size)
-      {:error, :enoent} -> new_writeable_chunked_file(path)
-      err -> err
-    end
-  end
+  alias Chunker.ChunkedFile
 
-  defp new_writeable_chunked_file(path) do
-    Chunker.DiscBased.WriteableFile.new(path)
-  end
+  defdelegate append_chunk(chunked_file, data), to: ChunkedFile
 
-  defp new_read_only_chunked_file(path, chunk_size) do
-    Chunker.DiscBased.ReadOnlyFile.new(path, chunk_size)
-  end
+  defdelegate insert_chunk(chunked_file, data, index), to: ChunkedFile
+
+  defdelegate remove_chunk(chunked_file, index), to: ChunkedFile
+
+  defdelegate chunk(chunked_file, index), to: ChunkedFile
+
+  defdelegate chunks(chunked_file), to: ChunkedFile
+
+  defdelegate commit(chunked_file), to: ChunkedFile
+
+  defdelegate writeable?(chunked_file), to: ChunkedFile
+
+  defdelegate path(chunked_file), to: ChunkedFile
+
+  defdelegate remove(chunked_file), to: ChunkedFile
+
+  defdelegate close(chunked_file), to: ChunkedFile
+
+  defdelegate closed?(chunked_file), to: ChunkedFile
 end

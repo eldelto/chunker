@@ -1,7 +1,6 @@
 defmodule Chunker.DiscBased.ReadOnlyFileTest do
   use ExUnit.Case
 
-  alias Chunker.ChunkedFile
   alias Chunker.DiscBased.ReadOnlyFile
 
   doctest ReadOnlyFile
@@ -18,67 +17,67 @@ defmodule Chunker.DiscBased.ReadOnlyFileTest do
 
   test "appending chunks" do
     chunked_file = new_chunked_file()
-    assert read_only?(ChunkedFile.append_chunk(chunked_file, nil))
+    assert read_only?(Chunker.append_chunk(chunked_file, nil))
   end
 
   test "committing ChunkedFile" do
     chunked_file = new_chunked_file()
-    assert read_only?(ChunkedFile.commit(chunked_file))
+    assert read_only?(Chunker.commit(chunked_file))
   end
 
   test "inserting chunk" do
     chunked_file = new_chunked_file()
-    assert read_only?(ChunkedFile.insert_chunk(chunked_file, nil, 0))
+    assert read_only?(Chunker.insert_chunk(chunked_file, nil, 0))
   end
 
   test "getting chunk" do
     chunked_file = new_chunked_file()
 
-    assert {:ok, "This"} = ChunkedFile.chunk(chunked_file, 0)
-    assert {:ok, " is "} = ChunkedFile.chunk(chunked_file, 1)
-    assert {:ok, "a te"} = ChunkedFile.chunk(chunked_file, 2)
-    assert {:error, _} = ChunkedFile.chunk(chunked_file, 100)
+    assert {:ok, "This"} = Chunker.chunk(chunked_file, 0)
+    assert {:ok, " is "} = Chunker.chunk(chunked_file, 1)
+    assert {:ok, "a te"} = Chunker.chunk(chunked_file, 2)
+    assert {:error, _} = Chunker.chunk(chunked_file, 100)
   end
 
   test "getting chunk list" do
     chunked_file = new_chunked_file()
 
-    assert {:ok, chunks} = ChunkedFile.chunks(chunked_file)
+    assert {:ok, chunks} = Chunker.chunks(chunked_file)
     assert 15 == length(chunks)
   end
 
   test "removing chunk" do
     chunked_file = new_chunked_file()
-    assert read_only?(ChunkedFile.remove_chunk(chunked_file, 0))
+    assert read_only?(Chunker.remove_chunk(chunked_file, 0))
   end
 
   test "writeable?" do
     chunked_file = new_chunked_file()
-    assert false == ChunkedFile.writeable?(chunked_file)
+    assert false == Chunker.writeable?(chunked_file)
   end
 
   test "path" do
     chunked_file = new_chunked_file()
-    assert @readable_file_path = ChunkedFile.path(chunked_file)
+    assert @readable_file_path = Chunker.path(chunked_file)
   end
 
   test "removing ChunkedFile" do
     chunked_file = new_chunked_file()
-    assert read_only?(ChunkedFile.remove(chunked_file))
+    assert read_only?(Chunker.remove(chunked_file))
   end
 
   test "closing ChunkedFile" do
     chunked_file = new_chunked_file()
-    assert read_only?(ChunkedFile.close(chunked_file))
+    assert read_only?(Chunker.close(chunked_file))
   end
 
   test "closed?" do
     chunked_file = new_chunked_file()
-    assert false === ChunkedFile.closed?(chunked_file)
+    assert false === Chunker.closed?(chunked_file)
   end
 
   defp new_chunked_file() do
-    {:ok, chunked_file} = Chunker.new(@readable_file_path, 4)
+    {:ok, chunked_file} = Chunker.DiscBased.new(@readable_file_path, 4)
     chunked_file
   end
 
