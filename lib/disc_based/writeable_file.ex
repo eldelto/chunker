@@ -123,7 +123,8 @@ defmodule Chunker.DiscBased.WriteableFile do
       with {:ok, target} <- Helper.file_stream(chunked_file.path),
            {:ok, chunks} <- Helper.read_chunk_map(chunked_file),
            :ok <-
-             Stream.map(chunks, &Helper.chunk_path(chunked_file, &1))
+             chunks
+             |> Stream.map(&Helper.chunk_path(chunked_file, &1))
              |> Stream.flat_map(&File.stream!(&1, [:read], 4096))
              |> Stream.into(target)
              |> Stream.run(),

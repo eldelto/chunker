@@ -11,7 +11,7 @@ V2
 # Rename WriteableChunkedFile to WriteableFile.
 # Rename ReadonlyChunkedFile to ReadonlyFile.
 # Overhaul public API to use "Chunker.*".
-- Add linter and hexdocs to deps.
+# Add linter and hexdocs to deps.
 - Use custom exceptions in error tuple.
 - Remove all TODOs.
 - Refactor to lazy streams.

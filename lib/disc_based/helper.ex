@@ -56,7 +56,8 @@ defmodule Chunker.DiscBased.Helper do
     string_list = string_split(string, ",")
 
     int_list =
-      Enum.map(string_list, &Integer.parse(&1))
+      string_list
+      |> Enum.map(&Integer.parse(&1))
       |> Enum.map(fn x ->
         case x do
           {int, _} -> int

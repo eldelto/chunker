@@ -4,7 +4,7 @@ defmodule Chunker.MixProject do
   def project do
     [
       app: :chunker,
-      version: "0.5.0",
+      version: "0.6.0",
       elixir: "~> 1.6",
       start_permanent: Mix.env() == :prod,
       deps: deps()
@@ -20,7 +20,9 @@ defmodule Chunker.MixProject do
   defp deps do
     [
       {:mix_test_watch, "~> 0.6", only: :dev, runtime: false},
-      {:dialyxir, "~> 0.5.1", only: :dev, runtime: false}
+      {:dialyxir, "~> 0.5.1", only: :dev, runtime: false},
+      {:ex_doc, "~> 0.19.0", only: :dev, runtime: false},
+      {:credo, "~> 0.10.2", only: :dev, runtime: false}
     ]
   end
 end
