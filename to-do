@@ -5,8 +5,14 @@ V1
 - Handle index out of range.
 
 V2
-- Use :ok instead of {:ok, nil}
+# Use :ok instead of {:ok, nil}.
+# Use defdelegate where possible.
+- Merge Helper with WriteableChunkedFile.
+- Rename WriteableChunkedFile to WriteableFile.
+- Rename ReadonlyChunkedFile to ReadonlyFile.
+- Add linter and hexdocs to deps.
 - Use custom exceptions in error tuple.
+- Remove all TODOs.
 - Refactor to lazy streams.
 - Typespecs.
 - Documentation.

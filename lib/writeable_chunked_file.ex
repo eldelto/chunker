@@ -16,23 +16,23 @@ defmodule Chunker.WriteableChunkedFile do
     end
   end
 
-  def append(chunked_file, data) do
+  def append_chunk(chunked_file, data) do
     case Process.alive?(chunked_file.pid) do
-      true -> GenServer.call(chunked_file.pid, {:append, chunked_file, data})
+      true -> GenServer.call(chunked_file.pid, {:append_chunk, chunked_file, data})
       false -> already_closed()
     end
   end
 
-  def insert(chunked_file, data, index) when is_integer(index) and index >= 0 do
+  def insert_chunk(chunked_file, data, index) when is_integer(index) and index >= 0 do
     case Process.alive?(chunked_file.pid) do
-      true -> GenServer.call(chunked_file.pid, {:insert, chunked_file, data, index})
+      true -> GenServer.call(chunked_file.pid, {:insert_chunk, chunked_file, data, index})
       false -> already_closed()
     end
   end
 
-  def remove(chunked_file, index) when is_integer(index) and index >= 0 do
+  def remove_chunk(chunked_file, index) when is_integer(index) and index >= 0 do
     case Process.alive?(chunked_file.pid) do
-      true -> GenServer.call(chunked_file.pid, {:remove, chunked_file, index})
+      true -> GenServer.call(chunked_file.pid, {:remove_chunk, chunked_file, index})
       false -> already_closed()
     end
   end
@@ -59,9 +59,9 @@ defmodule Chunker.WriteableChunkedFile do
 
   def path(chunked_file), do: chunked_file.path
   
-  def delete(chunked_file) do    
+  def remove(chunked_file) do    
     case File.rm_rf(chunked_file.chunked_path) do
-      {:ok, _} -> {:ok, nil}
+      {:ok, _} -> :ok
       err -> err
     end
   end
@@ -82,7 +82,7 @@ defmodule Chunker.WriteableChunkedFile do
     {:ok, nil}
   end
 
-  def handle_call({:append, chunked_file = %__MODULE__{}, data}, _from, state) do
+  def handle_call({:append_chunk, chunked_file = %__MODULE__{}, data}, _from, state) do
     #TODO: Use stream instead of data
     result = Helper.add_chunk(chunked_file, data, 0, fn(chunks, chunk_index, _) ->
       chunks ++ [chunk_index]
@@ -91,7 +91,7 @@ defmodule Chunker.WriteableChunkedFile do
     {:reply, result, state}
   end
 
-  def handle_call({:insert, chunked_file = %__MODULE__{}, data, index}, _from, state) do
+  def handle_call({:insert_chunk, chunked_file = %__MODULE__{}, data, index}, _from, state) do
     #TODO: Use stream instead of data
     result = Helper.add_chunk(chunked_file, data, index, fn(chunks, chunk_index, index) ->
       List.insert_at(chunks, index, chunk_index)
@@ -100,7 +100,7 @@ defmodule Chunker.WriteableChunkedFile do
     {:reply, result, state}
   end
 
-  def handle_call({:remove, chunked_file = %__MODULE__{}, index}, _from, state) do
+  def handle_call({:remove_chunk, chunked_file = %__MODULE__{}, index}, _from, state) do
     result = with {:ok, chunks} <- Helper.read_chunk_map(chunked_file),
           {:ok, chunk_path} <- Helper.mapped_chunk_path(chunked_file, chunks, index),
           :ok <- File.rm(chunk_path),
@@ -122,7 +122,7 @@ defmodule Chunker.WriteableChunkedFile do
                  |> Stream.flat_map(&(File.stream!(&1, [:read], 4096)))
                  |> Stream.into(target)
                  |> Stream.run(),
-          {:ok, _} <- delete(chunked_file) do          
+          :ok <- remove(chunked_file) do          
       {:ok, chunked_file.path}
     else
       err -> err
@@ -159,17 +159,11 @@ defimpl Chunker.ChunkedFile, for: Chunker.WriteableChunkedFile do
   alias Chunker.WriteableChunkedFile
   alias Chunker.Helper
 
-  def append_chunk(chunked_file, data) do
-    WriteableChunkedFile.append(chunked_file, data)
-  end
+  defdelegate append_chunk(chunked_file, data), to: WriteableChunkedFile
 
-  def insert_chunk(chunked_file, data, index) when is_integer(index) and index >= 0 do
-    WriteableChunkedFile.insert(chunked_file, data, index)
-  end
+  defdelegate insert_chunk(chunked_file, data, index), to: WriteableChunkedFile
 
-  def remove_chunk(chunked_file, index) when is_integer(index) and index >= 0 do
-    WriteableChunkedFile.remove(chunked_file, index)
-  end
+  defdelegate remove_chunk(chunked_file, index), to: WriteableChunkedFile
 
   def chunk(chunked_file, index) when is_integer(index) and index >= 0 do
     with {:ok, chunks} <- Helper.read_chunk_map(chunked_file),
@@ -184,23 +178,15 @@ defimpl Chunker.ChunkedFile, for: Chunker.WriteableChunkedFile do
     Helper.read_chunk_map(chunked_file)
   end
 
-  def commit(chunked_file) do
-    WriteableChunkedFile.commit(chunked_file)
-  end
+  defdelegate commit(chunked_file), to: WriteableChunkedFile
 
   def writeable?(_), do: true
 
   def path(chunked_file), do: chunked_file.path
   
-  def remove(chunked_file) do
-    WriteableChunkedFile.delete(chunked_file)
-  end
+  defdelegate remove(chunked_file), to: WriteableChunkedFile
   
-  def close(chunked_file) do
-    WriteableChunkedFile.close(chunked_file)
-  end
+  defdelegate close(chunked_file), to: WriteableChunkedFile
 
-  def closed?(chunked_file) do
-    WriteableChunkedFile.closed?(chunked_file)
-  end
+  defdelegate closed?(chunked_file), to: WriteableChunkedFile  
 end

@@ -31,7 +31,7 @@ defprotocol Chunker.ChunkedFile do
   @spec path(t) :: path | error
   def path(chunked_file)  
 
-  @spec remove(t) :: {:ok, nil} | error
+  @spec remove(t) :: :ok | error
   def remove(chunked_file)
 
   @spec close(t) :: :ok | error

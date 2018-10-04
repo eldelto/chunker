@@ -106,7 +106,7 @@ defmodule WriteableChunkedFileTest do
   test "removing ChunkedFile" do
     chunked_file = new_chunked_file()
     
-    assert {:ok, _} = ChunkedFile.remove(chunked_file)
+    assert :ok = ChunkedFile.remove(chunked_file)
     assert {:error, :enoent} = File.stat(chunked_file.chunked_path)
   end
 
