@@ -1,12 +1,12 @@
-defmodule Chunker.ReadOnlyChunkedFile do
+defmodule Chunker.DiscBased.ReadOnlyFile do
   defstruct path: nil, chunk_size: 1024 * 1024
 
   def new(path, chunk_size) do
-    {:ok, %Chunker.ReadOnlyChunkedFile{path: path, chunk_size: chunk_size}}
+    {:ok, %__MODULE__{path: path, chunk_size: chunk_size}}
   end
 end
 
-defimpl Chunker.ChunkedFile, for: Chunker.ReadOnlyChunkedFile do
+defimpl Chunker.ChunkedFile, for: Chunker.DiscBased.ReadOnlyFile do
   def append_chunk(_, _) do
     not_writeable()
   end

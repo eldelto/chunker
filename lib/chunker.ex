@@ -8,10 +8,10 @@ defmodule Chunker do
   end
 
   defp new_writeable_chunked_file(path) do
-    Chunker.WriteableChunkedFile.new(path)
+    Chunker.DiscBased.WriteableFile.new(path)
   end
 
   defp new_read_only_chunked_file(path, chunk_size) do
-    Chunker.ReadOnlyChunkedFile.new(path, chunk_size)
+    Chunker.DiscBased.ReadOnlyFile.new(path, chunk_size)
   end
 end

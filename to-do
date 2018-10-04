@@ -8,8 +8,9 @@ V2
 # Use :ok instead of {:ok, nil}.
 # Use defdelegate where possible.
 # Move implementations into new directory.
-- Rename WriteableChunkedFile to WriteableFile.
-- Rename ReadonlyChunkedFile to ReadonlyFile.
+# Rename WriteableChunkedFile to WriteableFile.
+# Rename ReadonlyChunkedFile to ReadonlyFile.
+- Overhaul public API to use "Chunker.*".
 - Add linter and hexdocs to deps.
 - Use custom exceptions in error tuple.
 - Remove all TODOs.

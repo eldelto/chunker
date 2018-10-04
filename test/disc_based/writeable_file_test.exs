@@ -1,10 +1,10 @@
-defmodule WriteableChunkedFileTest do
+defmodule Chunker.DiscBased.WriteableFileTest do
   use ExUnit.Case
 
   alias Chunker.ChunkedFile
-  alias Chunker.WriteableChunkedFile
+  alias Chunker.DiscBased.WriteableFile
 
-  doctest WriteableChunkedFile
+  doctest WriteableFile
 
   @writeable_file_path "test/resources/tmp/chunked_file.txt"
   @chunk_path "test/resources/tmp/chunked_file.txt.chunked/0.chunk"
@@ -20,7 +20,7 @@ defmodule WriteableChunkedFileTest do
   end
 
   test "new ChunkedFile" do
-    assert %WriteableChunkedFile{} = new_chunked_file()
+    assert %WriteableFile{} = new_chunked_file()
   end
 
   test "appending chunks" do

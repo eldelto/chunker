@@ -1,7 +1,7 @@
-defmodule Chunker.WriteableChunkedFile do
+defmodule Chunker.DiscBased.WriteableFile do
   use GenServer
 
-  alias Chunker.Helper
+  alias Chunker.DiscBased.Helper
 
   defstruct path: nil, chunked_path: nil, pid: nil
 
@@ -161,15 +161,15 @@ defmodule Chunker.WriteableChunkedFile do
   defp already_closed(), do: {:error, "Already closed."}
 end
 
-defimpl Chunker.ChunkedFile, for: Chunker.WriteableChunkedFile do
-  alias Chunker.WriteableChunkedFile
-  alias Chunker.Helper
+defimpl Chunker.ChunkedFile, for: Chunker.DiscBased.WriteableFile do
+  alias Chunker.DiscBased.WriteableFile
+  alias Chunker.DiscBased.Helper
 
-  defdelegate append_chunk(chunked_file, data), to: WriteableChunkedFile
+  defdelegate append_chunk(chunked_file, data), to: WriteableFile
 
-  defdelegate insert_chunk(chunked_file, data, index), to: WriteableChunkedFile
+  defdelegate insert_chunk(chunked_file, data, index), to: WriteableFile
 
-  defdelegate remove_chunk(chunked_file, index), to: WriteableChunkedFile
+  defdelegate remove_chunk(chunked_file, index), to: WriteableFile
 
   def chunk(chunked_file, index) when is_integer(index) and index >= 0 do
     with {:ok, chunks} <- Helper.read_chunk_map(chunked_file),
@@ -184,15 +184,15 @@ defimpl Chunker.ChunkedFile, for: Chunker.WriteableChunkedFile do
     Helper.read_chunk_map(chunked_file)
   end
 
-  defdelegate commit(chunked_file), to: WriteableChunkedFile
+  defdelegate commit(chunked_file), to: WriteableFile
 
   def writeable?(_), do: true
 
   def path(chunked_file), do: chunked_file.path
 
-  defdelegate remove(chunked_file), to: WriteableChunkedFile
+  defdelegate remove(chunked_file), to: WriteableFile
 
-  defdelegate close(chunked_file), to: WriteableChunkedFile
+  defdelegate close(chunked_file), to: WriteableFile
 
-  defdelegate closed?(chunked_file), to: WriteableChunkedFile
+  defdelegate closed?(chunked_file), to: WriteableFile
 end

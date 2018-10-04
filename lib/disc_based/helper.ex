@@ -1,4 +1,4 @@
-defmodule Chunker.Helper do
+defmodule Chunker.DiscBased.Helper do
   def file_stream(path) do
     try do
       file = File.stream!(path, [:append], 4096)

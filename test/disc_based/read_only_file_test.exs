@@ -1,10 +1,10 @@
-defmodule ReadOnlyChunkedFileTest do
+defmodule Chunker.DiscBased.ReadOnlyFileTest do
   use ExUnit.Case
 
   alias Chunker.ChunkedFile
-  alias Chunker.ReadOnlyChunkedFile
+  alias Chunker.DiscBased.ReadOnlyFile
 
-  doctest ReadOnlyChunkedFile
+  doctest ReadOnlyFile
 
   @readable_file_path "test/resources/tmp/test_file.txt"
 
@@ -13,7 +13,7 @@ defmodule ReadOnlyChunkedFileTest do
   end
 
   test "new ChunkedFile" do
-    assert %ReadOnlyChunkedFile{} = new_chunked_file()
+    assert %ReadOnlyFile{} = new_chunked_file()
   end
 
   test "appending chunks" do
