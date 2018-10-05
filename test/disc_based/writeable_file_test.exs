@@ -2,6 +2,8 @@ defmodule Chunker.DiscBased.WriteableFileTest do
   use ExUnit.Case
 
   alias Chunker.DiscBased.WriteableFile
+  alias Chunker.AlreadyCommittedError
+  alias Chunker.InvalidIndexError
 
   doctest WriteableFile
 
@@ -68,7 +70,7 @@ defmodule Chunker.DiscBased.WriteableFileTest do
     {:ok, _} = Chunker.append_chunk(chunked_file, "world")
 
     assert {:ok, "world"} = Chunker.chunk(chunked_file, 1)
-    assert {:error, _} = Chunker.chunk(chunked_file, 100)
+    assert {:error, %InvalidIndexError{}} = Chunker.chunk(chunked_file, 100)
   end
 
   test "getting chunk list" do
@@ -113,7 +115,7 @@ defmodule Chunker.DiscBased.WriteableFileTest do
     chunked_file = new_chunked_file()
 
     assert :ok = Chunker.close(chunked_file)
-    assert {:error, "Already closed."} = Chunker.append_chunk(chunked_file, "hello")
+    assert {:error, %AlreadyCommittedError{}} = Chunker.append_chunk(chunked_file, "hello")
   end
 
   test "closed?" do

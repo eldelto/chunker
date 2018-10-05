@@ -2,13 +2,15 @@ defmodule Chunker.DiscBased.WriteableFile do
   use GenServer
 
   alias Chunker.DiscBased.Helper
+  alias Chunker.AlreadyCommittedError
+  alias Chunker.InvalidIndexError
 
   defstruct path: nil, chunked_path: nil, pid: nil
 
   ## Client ##
   def new(path) do
     with {:ok, chunked_path} <- mkdir_if_nonexistant(path <> ".chunked"),
-         {:ok, _} <- create_chunk_map(chunked_path),
+         :ok <- create_chunk_map(chunked_path),
          {:ok, pid} <- GenServer.start_link(__MODULE__, :ok, []) do
       {:ok, %__MODULE__{path: path, chunked_path: chunked_path, pid: pid}}
     else
@@ -17,23 +19,32 @@ defmodule Chunker.DiscBased.WriteableFile do
   end
 
   def append_chunk(chunked_file, data) do
-    case Process.alive?(chunked_file.pid) do
-      true -> GenServer.call(chunked_file.pid, {:append_chunk, chunked_file, data})
-      false -> already_closed()
+    with true <- Process.alive?(chunked_file.pid),
+         :ok <- GenServer.call(chunked_file.pid, {:append_chunk, chunked_file, data}) do
+      {:ok, chunked_file}
+    else
+      false -> {:error, %AlreadyCommittedError{}}
+      err -> err
     end
   end
 
   def insert_chunk(chunked_file, data, index) when is_integer(index) and index >= 0 do
-    case Process.alive?(chunked_file.pid) do
-      true -> GenServer.call(chunked_file.pid, {:insert_chunk, chunked_file, data, index})
-      false -> already_closed()
+    with true <- Process.alive?(chunked_file.pid),
+         :ok <- GenServer.call(chunked_file.pid, {:insert_chunk, chunked_file, data, index}) do
+      {:ok, chunked_file}
+    else
+      false -> {:error, %AlreadyCommittedError{}}
+      err -> err
     end
   end
 
   def remove_chunk(chunked_file, index) when is_integer(index) and index >= 0 do
-    case Process.alive?(chunked_file.pid) do
-      true -> GenServer.call(chunked_file.pid, {:remove_chunk, chunked_file, index})
-      false -> already_closed()
+    with true <- Process.alive?(chunked_file.pid),
+         :ok <- GenServer.call(chunked_file.pid, {:remove_chunk, chunked_file, index}) do
+      {:ok, chunked_file}
+    else
+      false -> {:error, %AlreadyCommittedError{}}
+      err -> err
     end
   end
 
@@ -53,7 +64,7 @@ defmodule Chunker.DiscBased.WriteableFile do
   def commit(chunked_file) do
     case Process.alive?(chunked_file.pid) do
       true -> GenServer.call(chunked_file.pid, {:commit, chunked_file})
-      false -> already_closed()
+      false -> {:error, %AlreadyCommittedError{}}
     end
   end
 
@@ -69,7 +80,7 @@ defmodule Chunker.DiscBased.WriteableFile do
   def close(chunked_file) do
     case Process.alive?(chunked_file.pid) do
       true -> GenServer.stop(chunked_file.pid)
-      false -> already_closed()
+      false -> {:error, %AlreadyCommittedError{}}
     end
   end
 
@@ -78,10 +89,12 @@ defmodule Chunker.DiscBased.WriteableFile do
   end
 
   ## Server ##
+  @impl true
   def init(:ok) do
     {:ok, nil}
   end
 
+  @impl true
   def handle_call({:append_chunk, chunked_file = %__MODULE__{}, data}, _from, state) do
     # TODO: Use stream instead of data
     result =
@@ -92,6 +105,7 @@ defmodule Chunker.DiscBased.WriteableFile do
     {:reply, result, state}
   end
 
+  @impl true
   def handle_call({:insert_chunk, chunked_file = %__MODULE__{}, data, index}, _from, state) do
     # TODO: Use stream instead of data
     result =
@@ -102,14 +116,14 @@ defmodule Chunker.DiscBased.WriteableFile do
     {:reply, result, state}
   end
 
+  @impl true
   def handle_call({:remove_chunk, chunked_file = %__MODULE__{}, index}, _from, state) do
     result =
       with {:ok, chunks} <- Helper.read_chunk_map(chunked_file),
            {:ok, chunk_path} <- Helper.mapped_chunk_path(chunked_file, chunks, index),
            :ok <- File.rm(chunk_path),
-           new_chunks <- List.delete_at(chunks, index),
-           {:ok, _} <- Helper.write_chunk_map(chunked_file, new_chunks) do
-        {:ok, nil}
+           new_chunks <- List.delete_at(chunks, index) do
+        Helper.write_chunk_map(chunked_file, new_chunks)
       else
         err -> err
       end
@@ -117,6 +131,7 @@ defmodule Chunker.DiscBased.WriteableFile do
     {:reply, result, state}
   end
 
+  @impl true
   def handle_call({:commit, chunked_file = %__MODULE__{}}, _from, state) do
     # TODO: Add rescue block just in case
     result =
@@ -137,6 +152,7 @@ defmodule Chunker.DiscBased.WriteableFile do
     {:stop, :normal, result, state}
   end
 
+  @impl true
   def terminate(reason, _state) do
     {:shutdown, reason}
   end
@@ -152,14 +168,8 @@ defmodule Chunker.DiscBased.WriteableFile do
 
   defp create_chunk_map(path) do
     chunk_map_path = Path.join(path, "chunk_map")
-
-    case File.touch(chunk_map_path) do
-      :ok -> {:ok, nil}
-      err -> err
-    end
+    File.touch(chunk_map_path)
   end
-
-  defp already_closed(), do: {:error, "Already closed."}
 end
 
 defimpl Chunker.ChunkedFile, for: Chunker.DiscBased.WriteableFile do
