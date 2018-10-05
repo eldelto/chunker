@@ -1,4 +1,7 @@
 defmodule Chunker.DiscBased do
+  alias Chunker.DiscBased.ReadOnlyFile
+  alias Chunker.DiscBased.WriteableFile
+
   def new(path, chunk_size \\ 1024 * 1024) do
     case File.stat(path) do
       {:ok, _} -> new_read_only_chunked_file(path, chunk_size)
@@ -8,10 +11,10 @@ defmodule Chunker.DiscBased do
   end
 
   defp new_writeable_chunked_file(path) do
-    Chunker.DiscBased.WriteableFile.new(path)
+    WriteableFile.new(path)
   end
 
   defp new_read_only_chunked_file(path, chunk_size) do
-    Chunker.DiscBased.ReadOnlyFile.new(path, chunk_size)
+    ReadOnlyFile.new(path, chunk_size)
   end
 end

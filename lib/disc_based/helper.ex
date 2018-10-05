@@ -2,12 +2,10 @@ defmodule Chunker.DiscBased.Helper do
   alias Chunker.InvalidIndexError
 
   def file_stream(path) do
-    try do
-      file = File.stream!(path, [:append], 4096)
-      {:ok, file}
-    rescue
-      e in RuntimeError -> {:error, e}
-    end
+    file = File.stream!(path, [:append], 4096)
+    {:ok, file}
+  rescue
+    e in RuntimeError -> {:error, e}
   end
 
   def write_chunk_map(chunked_file, chunks) do
@@ -16,7 +14,7 @@ defmodule Chunker.DiscBased.Helper do
   end
 
   def read_chunk_map(chunked_file) do
-    # TODO: 
+    # TODO:
     case File.read(chunk_map_path(chunked_file)) do
       {:ok, content} -> string_to_integer_list(content)
       err -> err

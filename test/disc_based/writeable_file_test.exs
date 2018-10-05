@@ -1,8 +1,9 @@
 defmodule Chunker.DiscBased.WriteableFileTest do
   use ExUnit.Case
 
-  alias Chunker.DiscBased.WriteableFile
   alias Chunker.AlreadyCommittedError
+  alias Chunker.DiscBased
+  alias Chunker.DiscBased.WriteableFile
   alias Chunker.InvalidIndexError
 
   doctest WriteableFile
@@ -127,8 +128,8 @@ defmodule Chunker.DiscBased.WriteableFileTest do
     assert true === Chunker.closed?(chunked_file)
   end
 
-  defp new_chunked_file() do
-    {:ok, chunked_file} = Chunker.DiscBased.new(@writeable_file_path)
+  defp new_chunked_file do
+    {:ok, chunked_file} = DiscBased.new(@writeable_file_path)
     chunked_file
   end
 

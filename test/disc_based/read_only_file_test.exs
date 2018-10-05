@@ -1,6 +1,7 @@
 defmodule Chunker.DiscBased.ReadOnlyFileTest do
   use ExUnit.Case
 
+  alias Chunker.DiscBased
   alias Chunker.DiscBased.ReadOnlyFile
 
   doctest ReadOnlyFile
@@ -76,8 +77,8 @@ defmodule Chunker.DiscBased.ReadOnlyFileTest do
     assert false === Chunker.closed?(chunked_file)
   end
 
-  defp new_chunked_file() do
-    {:ok, chunked_file} = Chunker.DiscBased.new(@readable_file_path, 4)
+  defp new_chunked_file do
+    {:ok, chunked_file} = DiscBased.new(@readable_file_path, 4)
     chunked_file
   end
 

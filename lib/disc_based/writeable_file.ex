@@ -1,9 +1,8 @@
 defmodule Chunker.DiscBased.WriteableFile do
   use GenServer
 
-  alias Chunker.DiscBased.Helper
   alias Chunker.AlreadyCommittedError
-  alias Chunker.InvalidIndexError
+  alias Chunker.DiscBased.Helper
 
   defstruct path: nil, chunked_path: nil, pid: nil
 
