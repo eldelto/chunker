@@ -14,7 +14,6 @@ defmodule Chunker.DiscBased.Helper do
   end
 
   def read_chunk_map(chunked_file) do
-    # TODO:
     case File.read(chunk_map_path(chunked_file)) do
       {:ok, content} -> string_to_integer_list(content)
       err -> err
@@ -26,7 +25,6 @@ defmodule Chunker.DiscBased.Helper do
   end
 
   def chunk_path(chunked_file, index) when is_integer(index) and index >= 0 do
-    # TODO: Return error when the index is not in chunks.
     Path.join(chunked_file.chunked_path, to_string(index) <> ".chunk")
   end
 
@@ -40,7 +38,7 @@ defmodule Chunker.DiscBased.Helper do
   def add_chunk(chunked_file, data, index, chunk_map_modifier) when is_integer(index) do
     with {:ok, chunks} <- read_chunk_map(chunked_file),
          chunk_index <- next_chunk_index(chunks),
-         chunk_path = chunk_path(chunked_file, chunk_index),
+         chunk_path <- chunk_path(chunked_file, chunk_index),
          :ok <- File.write(chunk_path, data),
          new_chunks <- chunk_map_modifier.(chunks, chunk_index, index) do
       write_chunk_map(chunked_file, new_chunks)

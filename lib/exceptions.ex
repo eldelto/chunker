@@ -3,5 +3,5 @@ defmodule Chunker.AlreadyCommittedError do
 end
 
 defmodule Chunker.InvalidIndexError do
-  defexception message: nil, error: "The given index does not point to a valid chunk."
+  defexception message: "The given index does not point to a valid chunk."
 end

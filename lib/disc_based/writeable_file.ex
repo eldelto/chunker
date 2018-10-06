@@ -95,7 +95,6 @@ defmodule Chunker.DiscBased.WriteableFile do
 
   @impl true
   def handle_call({:append_chunk, chunked_file = %__MODULE__{}, data}, _from, state) do
-    # TODO: Use stream instead of data
     result =
       Helper.add_chunk(chunked_file, data, 0, fn chunks, chunk_index, _ ->
         chunks ++ [chunk_index]
@@ -106,7 +105,6 @@ defmodule Chunker.DiscBased.WriteableFile do
 
   @impl true
   def handle_call({:insert_chunk, chunked_file = %__MODULE__{}, data, index}, _from, state) do
-    # TODO: Use stream instead of data
     result =
       Helper.add_chunk(chunked_file, data, index, fn chunks, chunk_index, index ->
         List.insert_at(chunks, index, chunk_index)
@@ -132,7 +130,6 @@ defmodule Chunker.DiscBased.WriteableFile do
 
   @impl true
   def handle_call({:commit, chunked_file = %__MODULE__{}}, _from, state) do
-    # TODO: Add rescue block just in case
     result =
       with {:ok, target} <- Helper.file_stream(chunked_file.path),
            {:ok, chunks} <- Helper.read_chunk_map(chunked_file),
