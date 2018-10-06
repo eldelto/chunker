@@ -8,7 +8,7 @@ defmodule Chunker.DiscBased.ReadOnlyFileTest do
 
   @readable_file_path "test/resources/tmp/test_file.txt"
 
-  setup_all do
+  setup do
     File.write(@readable_file_path, "This is a test file which contains some text to read from.")
   end
 
@@ -57,14 +57,11 @@ defmodule Chunker.DiscBased.ReadOnlyFileTest do
     assert false == Chunker.writeable?(chunked_file)
   end
 
-  test "path" do
-    chunked_file = new_chunked_file()
-    assert @readable_file_path = Chunker.path(chunked_file)
-  end
-
   test "removing ChunkedFile" do
     chunked_file = new_chunked_file()
-    assert read_only?(Chunker.remove(chunked_file))
+
+    assert :ok = Chunker.remove(chunked_file)
+    assert {:error, :enoent} = File.stat(@readable_file_path)
   end
 
   test "closing ChunkedFile" do

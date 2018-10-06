@@ -61,12 +61,6 @@ defprotocol Chunker.ChunkedFile do
   def writeable?(chunked_file)
 
   @doc """
-  Returns the file path of the given `chunked_file`.
-  """
-  @spec path(t) :: path | error
-  def path(chunked_file)
-
-  @doc """
   Removes the given `chunked_file`.
   """
   @spec remove(t) :: :ok | error

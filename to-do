@@ -17,7 +17,8 @@ V2
 # Documentation.
 - Typespecs.
 - Remove Chunker.chunks/1 for Chunker.length/1?
-- Remove Chunker.path/1 because it is too specific?
+# Remove Chunker.path/1 because it is too specific?
+- Use custom exception in Chunker.DiscBased.ReadonlyFile.
 
 V3
 - Refactor to lazy streams.

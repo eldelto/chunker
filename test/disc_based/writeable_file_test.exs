@@ -100,16 +100,11 @@ defmodule Chunker.DiscBased.WriteableFileTest do
     assert true === Chunker.writeable?(chunked_file)
   end
 
-  test "path" do
-    chunked_file = new_chunked_file()
-    assert @writeable_file_path = Chunker.path(chunked_file)
-  end
-
   test "removing ChunkedFile" do
     chunked_file = new_chunked_file()
 
     assert :ok = Chunker.remove(chunked_file)
-    assert {:error, :enoent} = File.stat(chunked_file.chunked_path)
+    assert {:error, :enoent} = File.stat(@writeable_file_path)
   end
 
   test "closing ChunkedFile" do

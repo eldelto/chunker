@@ -54,8 +54,11 @@ defimpl Chunker.ChunkedFile, for: Chunker.DiscBased.ReadOnlyFile do
 
   def path(chunked_file), do: chunked_file.path
 
-  def remove(_) do
-    not_writeable()
+  def remove(chunked_file) do
+    case File.rm_rf(chunked_file.path) do
+      {:ok, _} -> :ok
+      err -> err
+    end
   end
 
   def close(_) do

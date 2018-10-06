@@ -48,11 +48,6 @@ defmodule Chunker do
   defdelegate writeable?(chunked_file), to: ChunkedFile
 
   @doc """
-  Returns the file path of the given `chunked_file`.
-  """
-  defdelegate path(chunked_file), to: ChunkedFile
-
-  @doc """
   Removes the given `chunked_file`.
   """
   defdelegate remove(chunked_file), to: ChunkedFile
