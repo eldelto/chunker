@@ -14,6 +14,10 @@ V2
 # Add linter and hexdocs to deps.
 # Use custom exceptions in error tuple.
 # Remove all TODOs.
-- Refactor to lazy streams.
+# Documentation.
 - Typespecs.
-- Documentation.
+- Remove Chunker.chunks/1 for Chunker.length/1?
+- Remove Chunker.path/1 because it is too specific?
+
+V3
+- Refactor to lazy streams.

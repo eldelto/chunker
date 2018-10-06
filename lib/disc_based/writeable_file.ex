@@ -1,4 +1,6 @@
 defmodule Chunker.DiscBased.WriteableFile do
+  @moduledoc false
+
   use GenServer
 
   alias Chunker.AlreadyCommittedError

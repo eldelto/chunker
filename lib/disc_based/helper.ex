@@ -1,4 +1,6 @@
 defmodule Chunker.DiscBased.Helper do
+  @moduledoc false
+
   alias Chunker.InvalidIndexError
 
   def file_stream(path) do

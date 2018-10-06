@@ -1,4 +1,6 @@
 defmodule Chunker.DiscBased.ReadOnlyFile do
+  @moduledoc false
+
   defstruct path: nil, chunk_size: 1024 * 1024
 
   def new(path, chunk_size) do
