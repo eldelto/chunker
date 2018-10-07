@@ -3,6 +3,7 @@ defmodule Chunker.DiscBased.ReadOnlyFileTest do
 
   alias Chunker.DiscBased
   alias Chunker.DiscBased.ReadOnlyFile
+  alias Chunker.DiscBased.ReadOnlyFile.ReadOnlyError
 
   doctest ReadOnlyFile
 
@@ -79,6 +80,6 @@ defmodule Chunker.DiscBased.ReadOnlyFileTest do
   end
 
   defp read_only?(result) do
-    result == {:error, "This ChunkedFile is read-only."}
+    result == {:error, %ReadOnlyError{}}
   end
 end

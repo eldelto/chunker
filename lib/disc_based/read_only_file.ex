@@ -6,9 +6,15 @@ defmodule Chunker.DiscBased.ReadOnlyFile do
   def new(path, chunk_size) do
     {:ok, %__MODULE__{path: path, chunk_size: chunk_size}}
   end
+
+  defmodule ReadOnlyError do
+    defexception message: "This ChunkedFile is read-only."
+  end
 end
 
 defimpl Chunker.ChunkedFile, for: Chunker.DiscBased.ReadOnlyFile do
+  alias Chunker.DiscBased.ReadOnlyFile.ReadOnlyError
+
   def append_chunk(_, _) do
     not_writeable()
   end
@@ -72,5 +78,5 @@ defimpl Chunker.ChunkedFile, for: Chunker.DiscBased.ReadOnlyFile do
   def closed?(_), do: false
 
   ## Helper functions ##
-  defp not_writeable, do: {:error, "This ChunkedFile is read-only."}
+  defp not_writeable, do: {:error, %ReadOnlyError{}}
 end
