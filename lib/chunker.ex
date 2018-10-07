@@ -29,9 +29,10 @@ defmodule Chunker do
   defdelegate chunk(chunked_file, index), to: ChunkedFile
 
   @doc """
-  Returns a list containing the indices of all chunks.
+  Returns the number of individual chunks the given `chunked_file`
+  consists of.
   """
-  defdelegate chunks(chunked_file), to: ChunkedFile
+  defdelegate length(chunked_file), to: ChunkedFile
 
   @doc """
   Commits the given `chunked_file`.

@@ -39,10 +39,11 @@ defprotocol Chunker.ChunkedFile do
   def chunk(chunked_file, index)
 
   @doc """
-  Returns a list containing the indices of all chunks.
+  Returns the number of individual chunks the given `chunked_file`
+  consists of.
   """
-  @spec chunks(t) :: {:ok, [integer]} | error
-  def chunks(chunked_file)
+  @spec length(t) :: {:ok, integer} | error
+  def length(chunked_file)
 
   @doc """
   Commits the given `chunked_file`.

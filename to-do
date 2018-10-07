@@ -16,7 +16,7 @@ V2
 # Remove all TODOs.
 # Documentation.
 - Typespecs.
-- Remove Chunker.chunks/1 for Chunker.length/1?
+# Remove Chunker.chunks/1 for Chunker.length/1?
 # Remove Chunker.path/1 because it is too specific?
 - Use custom exception in Chunker.DiscBased.ReadonlyFile.
 

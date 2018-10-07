@@ -34,12 +34,16 @@ defimpl Chunker.ChunkedFile, for: Chunker.DiscBased.ReadOnlyFile do
     end
   end
 
-  def chunks(chunked_file) do
+  def length(chunked_file) do
     case File.stat(chunked_file.path) do
       {:ok, %{size: size}} ->
-        number_of_chunks = size / chunked_file.chunk_size
-        number_of_chunks = trunc(Float.ceil(number_of_chunks))
-        {:ok, Enum.to_list(1..number_of_chunks)}
+        number_of_chunks =
+          size
+          |> Kernel./(chunked_file.chunk_size)
+          |> Float.ceil()
+          |> trunc()
+
+        {:ok, number_of_chunks}
 
       err ->
         err

@@ -40,11 +40,10 @@ defmodule Chunker.DiscBased.ReadOnlyFileTest do
     assert {:error, _} = Chunker.chunk(chunked_file, 100)
   end
 
-  test "getting chunk list" do
+  test "getting chunk length" do
     chunked_file = new_chunked_file()
 
-    assert {:ok, chunks} = Chunker.chunks(chunked_file)
-    assert 15 == length(chunks)
+    assert {:ok, 15} = Chunker.length(chunked_file)
   end
 
   test "removing chunk" do

@@ -74,14 +74,13 @@ defmodule Chunker.DiscBased.WriteableFileTest do
     assert {:error, %InvalidIndexError{}} = Chunker.chunk(chunked_file, 100)
   end
 
-  test "getting chunk list" do
+  test "getting chunk length" do
     chunked_file = new_chunked_file()
 
     {:ok, _} = Chunker.append_chunk(chunked_file, "hello")
     {:ok, _} = Chunker.append_chunk(chunked_file, "world")
 
-    assert {:ok, chunks} = Chunker.chunks(chunked_file)
-    assert 2 == length(chunks)
+    assert {:ok, 2} = Chunker.length(chunked_file)
   end
 
   test "removing chunk" do

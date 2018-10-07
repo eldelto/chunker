@@ -58,8 +58,11 @@ defmodule Chunker.DiscBased.WriteableFile do
     end
   end
 
-  def chunks(chunked_file) do
-    Helper.read_chunk_map(chunked_file)
+  def length(chunked_file) do
+    case Helper.read_chunk_map(chunked_file) do
+      {:ok, chunks} -> {:ok, Kernel.length(chunks)}
+      err -> err
+    end
   end
 
   def commit(chunked_file) do
@@ -189,9 +192,7 @@ defimpl Chunker.ChunkedFile, for: Chunker.DiscBased.WriteableFile do
     end
   end
 
-  def chunks(chunked_file) do
-    Helper.read_chunk_map(chunked_file)
-  end
+  defdelegate length(chunked_file), to: WriteableFile
 
   defdelegate commit(chunked_file), to: WriteableFile
 
