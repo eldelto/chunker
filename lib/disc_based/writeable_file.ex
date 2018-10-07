@@ -5,15 +5,16 @@ defmodule Chunker.DiscBased.WriteableFile do
 
   alias Chunker.AlreadyCommittedError
   alias Chunker.DiscBased.Helper
+  alias Chunker.DiscBased.ReadOnlyFile
 
-  defstruct path: nil, chunked_path: nil, pid: nil
+  defstruct path: nil, chunked_path: nil, pid: nil, chunk_size: 1024 * 1024
 
   ## Client ##
-  def new(path) do
+  def new(path, chunk_size) do
     with {:ok, chunked_path} <- mkdir_if_nonexistant(path <> ".chunked"),
          :ok <- create_chunk_map(chunked_path),
          {:ok, pid} <- GenServer.start_link(__MODULE__, :ok, []) do
-      {:ok, %__MODULE__{path: path, chunked_path: chunked_path, pid: pid}}
+      {:ok, %__MODULE__{path: path, chunked_path: chunked_path, pid: pid, chunk_size: chunk_size}}
     else
       err -> err
     end
@@ -66,9 +67,12 @@ defmodule Chunker.DiscBased.WriteableFile do
   end
 
   def commit(chunked_file) do
-    case Process.alive?(chunked_file.pid) do
-      true -> GenServer.call(chunked_file.pid, {:commit, chunked_file})
+    with true <- Process.alive?(chunked_file.pid),
+         {:ok, path} <- GenServer.call(chunked_file.pid, {:commit, chunked_file}) do
+      ReadOnlyFile.new(path, chunked_file.chunk_size)
+    else
       false -> {:error, %AlreadyCommittedError{}}
+      err -> err
     end
   end
 

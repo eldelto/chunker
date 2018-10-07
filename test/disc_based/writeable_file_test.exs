@@ -3,6 +3,7 @@ defmodule Chunker.DiscBased.WriteableFileTest do
 
   alias Chunker.AlreadyCommittedError
   alias Chunker.DiscBased
+  alias Chunker.DiscBased.ReadOnlyFile
   alias Chunker.DiscBased.WriteableFile
   alias Chunker.InvalidIndexError
 
@@ -41,8 +42,8 @@ defmodule Chunker.DiscBased.WriteableFileTest do
 
     {:ok, _} = Chunker.append_chunk(chunked_file, "hello ")
     {:ok, _} = Chunker.append_chunk(chunked_file, "world")
-    assert {:ok, path} = Chunker.commit(chunked_file)
-    assert @writeable_file_path = path
+    assert {:ok, %ReadOnlyFile{}} = Chunker.commit(chunked_file)
+
     assert {:ok, "hello world"} = File.read(@writeable_file_path)
     assert {:error, :enoent} = File.lstat(@writeable_file_path <> ".chunked")
   end
@@ -59,8 +60,7 @@ defmodule Chunker.DiscBased.WriteableFileTest do
     assert {:ok, _} = File.stat(@chunk_path_2)
     assert {:ok, "0,2,1"} = File.read(chunk_map_path(chunked_file))
 
-    assert {:ok, path} = Chunker.commit(chunked_file)
-    assert @writeable_file_path = path
+    assert {:ok, _} = Chunker.commit(chunked_file)
     assert {:ok, "hello test world"} = File.read(@writeable_file_path)
   end
 

@@ -22,17 +22,9 @@ defmodule Chunker.DiscBased do
   def new(path, chunk_size \\ 1024 * 1024)
       when is_bitstring(path) and is_integer(chunk_size) and chunk_size > 0 do
     case File.stat(path) do
-      {:ok, _} -> new_read_only_chunked_file(path, chunk_size)
-      {:error, :enoent} -> new_writeable_chunked_file(path)
+      {:ok, _} -> ReadOnlyFile.new(path, chunk_size)
+      {:error, :enoent} -> WriteableFile.new(path, chunk_size)
       err -> err
     end
-  end
-
-  defp new_writeable_chunked_file(path) do
-    WriteableFile.new(path)
-  end
-
-  defp new_read_only_chunked_file(path, chunk_size) do
-    ReadOnlyFile.new(path, chunk_size)
   end
 end
