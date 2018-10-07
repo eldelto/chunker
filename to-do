@@ -15,10 +15,13 @@ V2
 # Use custom exceptions in error tuple.
 # Remove all TODOs.
 # Documentation.
-- Typespecs.
+# Typespecs.
 # Remove Chunker.chunks/1 for Chunker.length/1?
 # Remove Chunker.path/1 because it is too specific?
 - Use custom exception in Chunker.DiscBased.ReadonlyFile.
+- Chunker.commit/1 should return a new ChunkedFile.
+- Rename Chunker.writeable?/1 to Chunker.commited?/1?
+- Add Chunker.replace_chunk/3?
 
 V3
 - Refactor to lazy streams.

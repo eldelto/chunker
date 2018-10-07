@@ -3,23 +3,20 @@ defprotocol Chunker.ChunkedFile do
   Protocol for custom implementation of chunked files.
   """
 
-  @type path :: String.t()
-  @type chunk :: any
-  @type reason :: any
-  @type error :: {:error, reason}
-  @type result :: {:ok, t} | error
+  @type error_tuple :: Chunker.error_tuple()
+  @type result :: Chunker.result()
 
   @doc """
   Appends `data` to the given `chunked_file`.
   """
-  @spec append_chunk(t, any) :: result
+  @spec append_chunk(t, bitstring) :: result
   def append_chunk(chunked_file, data)
 
   @doc """
   Inserts `data` to the given `chunked_file` at the position specified
   by `index`.
   """
-  @spec insert_chunk(t, any, integer) :: result
+  @spec insert_chunk(t, bitstring, integer) :: result
   def insert_chunk(chunked_file, data, index)
 
   @doc """
@@ -29,20 +26,18 @@ defprotocol Chunker.ChunkedFile do
   @spec remove_chunk(t, integer) :: result
   def remove_chunk(chunked_file, index)
 
-  # def replace_chunk(chunked_file, data, index)
-
   @doc """
   Returns the data of the chunk with `index` from the given 
   `chunked_file`.
   """
-  @spec chunk(t, integer) :: {:ok, chunk} | error
+  @spec chunk(t, integer) :: {:ok, bitstring} | error_tuple
   def chunk(chunked_file, index)
 
   @doc """
   Returns the number of individual chunks the given `chunked_file`
   consists of.
   """
-  @spec length(t) :: {:ok, integer} | error
+  @spec length(t) :: {:ok, integer} | error_tuple
   def length(chunked_file)
 
   @doc """
@@ -51,7 +46,7 @@ defprotocol Chunker.ChunkedFile do
   After the file has been committed, chunks can no longer be added or
   removed.
   """
-  @spec commit(t) :: path | error
+  @spec commit(t) :: result
   def commit(chunked_file)
 
   @doc """
@@ -64,7 +59,7 @@ defprotocol Chunker.ChunkedFile do
   @doc """
   Removes the given `chunked_file`.
   """
-  @spec remove(t) :: :ok | error
+  @spec remove(t) :: :ok | error_tuple
   def remove(chunked_file)
 
   @doc """
@@ -73,7 +68,7 @@ defprotocol Chunker.ChunkedFile do
   After the file has been closed, it is not possible to read from it
   nor write to it.
   """
-  @spec close(t) :: :ok | error
+  @spec close(t) :: :ok | error_tuple
   def close(chunked_file)
 
   @doc """

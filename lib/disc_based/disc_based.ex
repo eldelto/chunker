@@ -7,6 +7,8 @@ defmodule Chunker.DiscBased do
   alias Chunker.DiscBased.ReadOnlyFile
   alias Chunker.DiscBased.WriteableFile
 
+  @type t :: Chunker.t()
+
   @doc """
   Returns a writeable or readeable chunked file.
 
@@ -16,6 +18,7 @@ defmodule Chunker.DiscBased do
   The second argument `chunk_size` sets the size of the individual 
   chunks.
   """
+  @spec new(bitstring, integer) :: t
   def new(path, chunk_size \\ 1024 * 1024)
       when is_bitstring(path) and is_integer(chunk_size) and chunk_size > 0 do
     case File.stat(path) do
