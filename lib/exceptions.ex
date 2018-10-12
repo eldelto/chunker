@@ -1,5 +1,5 @@
-defmodule Chunker.AlreadyCommittedError do
-  defexception message: "The given file has already been committed."
+defmodule Chunker.AlreadyClosedError do
+  defexception message: "The given file has already been closed."
 end
 
 defmodule Chunker.InvalidIndexError do

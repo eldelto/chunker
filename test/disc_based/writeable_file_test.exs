@@ -1,7 +1,7 @@
 defmodule Chunker.DiscBased.WriteableFileTest do
   use ExUnit.Case
 
-  alias Chunker.AlreadyCommittedError
+  alias Chunker.AlreadyClosedError  
   alias Chunker.DiscBased
   alias Chunker.DiscBased.ReadOnlyFile
   alias Chunker.DiscBased.WriteableFile
@@ -110,7 +110,7 @@ defmodule Chunker.DiscBased.WriteableFileTest do
     chunked_file = new_chunked_file()
 
     assert :ok = Chunker.close(chunked_file)
-    assert {:error, %AlreadyCommittedError{}} = Chunker.append_chunk(chunked_file, "hello")
+    assert {:error, %AlreadyClosedError{}} = Chunker.append_chunk(chunked_file, "hello")
   end
 
   test "closed?" do

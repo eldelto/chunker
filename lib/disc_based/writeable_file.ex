@@ -3,7 +3,7 @@ defmodule Chunker.DiscBased.WriteableFile do
 
   use GenServer
 
-  alias Chunker.AlreadyCommittedError
+  alias Chunker.AlreadyClosedError
   alias Chunker.DiscBased.Helper
   alias Chunker.DiscBased.ReadOnlyFile
 
@@ -25,7 +25,7 @@ defmodule Chunker.DiscBased.WriteableFile do
          :ok <- GenServer.call(chunked_file.pid, {:append_chunk, chunked_file, data}) do
       {:ok, chunked_file}
     else
-      false -> {:error, %AlreadyCommittedError{}}
+      false -> {:error, %AlreadyClosedError{}}
       err -> err
     end
   end
@@ -35,7 +35,7 @@ defmodule Chunker.DiscBased.WriteableFile do
          :ok <- GenServer.call(chunked_file.pid, {:insert_chunk, chunked_file, data, index}) do
       {:ok, chunked_file}
     else
-      false -> {:error, %AlreadyCommittedError{}}
+      false -> {:error, %AlreadyClosedError{}}
       err -> err
     end
   end
@@ -45,7 +45,7 @@ defmodule Chunker.DiscBased.WriteableFile do
          :ok <- GenServer.call(chunked_file.pid, {:remove_chunk, chunked_file, index}) do
       {:ok, chunked_file}
     else
-      false -> {:error, %AlreadyCommittedError{}}
+      false -> {:error, %AlreadyClosedError{}}
       err -> err
     end
   end
@@ -71,7 +71,7 @@ defmodule Chunker.DiscBased.WriteableFile do
          {:ok, path} <- GenServer.call(chunked_file.pid, {:commit, chunked_file}) do
       ReadOnlyFile.new(path, chunked_file.chunk_size)
     else
-      false -> {:error, %AlreadyCommittedError{}}
+      false -> {:error, %AlreadyClosedError{}}
       err -> err
     end
   end
@@ -88,7 +88,7 @@ defmodule Chunker.DiscBased.WriteableFile do
   def close(chunked_file) do
     case Process.alive?(chunked_file.pid) do
       true -> GenServer.stop(chunked_file.pid)
-      false -> {:error, %AlreadyCommittedError{}}
+      false -> {:error, %AlreadyClosedError{}}
     end
   end
 
