@@ -1,7 +1,7 @@
 defmodule Chunker.DiscBased.WriteableFileTest do
   use ExUnit.Case
 
-  alias Chunker.AlreadyClosedError  
+  alias Chunker.AlreadyClosedError
   alias Chunker.DiscBased
   alias Chunker.DiscBased.ReadOnlyFile
   alias Chunker.DiscBased.WriteableFile

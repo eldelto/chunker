@@ -21,7 +21,7 @@ V2
 # Use custom exception in Chunker.DiscBased.ReadonlyFile.
 # Chunker.commit/1 should return a new ChunkedFile.
 # AlreadyClosedError instead of AlreadyCommittedError.
-- Move ReadOnlyError into Chunker.Exceptions module.
+# Move ReadOnlyError into Chunker.Exceptions module.
 
 V3
 - Use Chunker.ChunkedFile.insert/3, remove/2 & get/2?

@@ -3,7 +3,7 @@ defmodule Chunker.DiscBased.ReadOnlyFileTest do
 
   alias Chunker.DiscBased
   alias Chunker.DiscBased.ReadOnlyFile
-  alias Chunker.DiscBased.ReadOnlyFile.ReadOnlyError
+  alias Chunker.ReadOnlyError
 
   doctest ReadOnlyFile
 
