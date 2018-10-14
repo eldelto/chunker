@@ -4,7 +4,7 @@ defmodule Chunker.MixProject do
   def project do
     [
       app: :chunker,
-      version: "0.10.2",
+      version: "0.10.3",
       elixir: "~> 1.6",
       start_permanent: Mix.env() == :prod,
       deps: deps()

@@ -66,7 +66,7 @@ defmodule Chunker.DiscBased.ReadOnlyFileTest do
 
   test "closing ChunkedFile" do
     chunked_file = new_chunked_file()
-    assert read_only?(Chunker.close(chunked_file))
+    assert :ok = Chunker.close(chunked_file)
   end
 
   test "closed?" do

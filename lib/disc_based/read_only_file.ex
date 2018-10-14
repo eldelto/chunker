@@ -68,7 +68,7 @@ defimpl Chunker.ChunkedFile, for: Chunker.DiscBased.ReadOnlyFile do
   end
 
   def close(_) do
-    not_writeable()
+    :ok
   end
 
   def closed?(_), do: false
