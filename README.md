@@ -47,8 +47,7 @@ backed by a database) by implementing the protocol `Chunker.ChunkedFile`:
 defimpl Chunker.ChunkedFile, for: CustomChunkedFile do
   def append_chunk(chunked_file, data) do
     ...
-  end
-  
+  end  
   ...  
 end
 ```

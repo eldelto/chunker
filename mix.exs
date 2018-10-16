@@ -6,7 +6,7 @@ defmodule Chunker.MixProject do
       app: :chunker,
       version: "0.10.3",
       elixir: "~> 1.6",
-      start_permanent: Mix.env() == :prod,      
+      start_permanent: Mix.env() == :prod,
       description: description(),
       package: package(),
       deps: deps(),
@@ -36,10 +36,12 @@ defmodule Chunker.MixProject do
 
   # Package metadata.
   defp package do
-    licenses: ["Apache 2.0"],
-    links: %{
-      "GitHub" => "https://github.com/elixir-ecto/postgrex",
-      "Online documentation" => "https://hexdocs.pm/chunker"
-    }
+    [
+      licenses: ["Apache 2.0"],
+      links: %{
+        "GitHub" => "https://github.com/elixir-ecto/postgrex",
+        "Online documentation" => "https://hexdocs.pm/chunker"
+      }
+    ]
   end
 end
