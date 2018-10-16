@@ -1,5 +1,10 @@
 # Chunker
 
+# Repo example for Elixir
+
+[![Hex version badge](https://img.shields.io/hexpm/v/chunker.svg)](https://hex.pm/packages/chunker)
+[![License badge](https://img.shields.io/hexpm/l/chunker.svg)](https://gitlab.com/eldelto/chunker/blob/master/LICENCE)
+
 A library to deal with files in chunks (e.g. chunked file upload).
 
 Chunked file uploads are often necessary when dealing with very large files
