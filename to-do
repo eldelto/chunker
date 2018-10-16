@@ -24,6 +24,7 @@ V2
 # Move ReadOnlyError into Chunker.Exceptions module.
 
 V3
+- Close chunked file on commit?
 - Use Chunker.ChunkedFile.insert/3, remove/2 & get/2?
 - Refactor to lazy streams.
 - Add Chunker.replace_chunk/3?
