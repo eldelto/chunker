@@ -25,5 +25,6 @@ V2
 
 V3
 # Use Chunker.ChunkedFile.insert/3, remove/2 & get/2?
+- Add Chunker.replace_chunk/3.
+- Add Chunker.prepend_chunk/2.
 - Refactor to lazy streams.
-- Add Chunker.replace_chunk/3?
