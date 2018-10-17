@@ -11,10 +11,6 @@ end
 defimpl Chunker.ChunkedFile, for: Chunker.DiscBased.ReadOnlyFile do
   alias Chunker.ReadOnlyError
 
-  def append_chunk(_, _) do
-    not_writeable()
-  end
-
   def insert_chunk(_, _, _) do
     not_writeable()
   end
@@ -23,7 +19,7 @@ defimpl Chunker.ChunkedFile, for: Chunker.DiscBased.ReadOnlyFile do
     not_writeable()
   end
 
-  def chunk(chunked_file, index) when is_integer(index) and index >= 0 do
+  def get_chunk(chunked_file, index) when is_integer(index) and index >= 0 do
     chunk_size = chunked_file.chunk_size
 
     with {:ok, io_device} <- :file.open(chunked_file.path, [:read, :binary, :raw]),

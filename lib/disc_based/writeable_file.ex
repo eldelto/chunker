@@ -50,7 +50,7 @@ defmodule Chunker.DiscBased.WriteableFile do
     end
   end
 
-  def chunk(chunked_file, index) when is_integer(index) and index >= 0 do
+  def get_chunk(chunked_file, index) when is_integer(index) and index >= 0 do
     with {:ok, chunks} <- Helper.read_chunk_map(chunked_file),
          {:ok, chunk_path} <- Helper.mapped_chunk_path(chunked_file, chunks, index) do
       File.read(chunk_path)
@@ -100,16 +100,6 @@ defmodule Chunker.DiscBased.WriteableFile do
   @impl true
   def init(:ok) do
     {:ok, nil}
-  end
-
-  @impl true
-  def handle_call({:append_chunk, chunked_file = %__MODULE__{}, data}, _from, state) do
-    result =
-      Helper.add_chunk(chunked_file, data, 0, fn chunks, chunk_index, _ ->
-        chunks ++ [chunk_index]
-      end)
-
-    {:reply, result, state}
   end
 
   @impl true
@@ -181,13 +171,11 @@ defimpl Chunker.ChunkedFile, for: Chunker.DiscBased.WriteableFile do
   alias Chunker.DiscBased.WriteableFile
   alias Chunker.DiscBased.Helper
 
-  defdelegate append_chunk(chunked_file, data), to: WriteableFile
-
   defdelegate insert_chunk(chunked_file, data, index), to: WriteableFile
 
   defdelegate remove_chunk(chunked_file, index), to: WriteableFile
 
-  def chunk(chunked_file, index) when is_integer(index) and index >= 0 do
+  def get_chunk(chunked_file, index) when is_integer(index) and index >= 0 do
     with {:ok, chunks} <- Helper.read_chunk_map(chunked_file),
          {:ok, chunk_path} <- Helper.mapped_chunk_path(chunked_file, chunks, index) do
       File.read(chunk_path)

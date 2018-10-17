@@ -15,7 +15,12 @@ defmodule Chunker do
   Appends `data` to the given `chunked_file`.
   """
   @spec append_chunk(t, bitstring) :: result
-  defdelegate append_chunk(chunked_file, data), to: ChunkedFile
+  def append_chunk(chunked_file, data) do
+    case __MODULE__.length(chunked_file) do
+      {:ok, length} -> insert_chunk(chunked_file, data, length)
+      err -> err
+    end
+  end
 
   @doc """
   Inserts `data` to the given `chunked_file` at the position specified
@@ -35,8 +40,8 @@ defmodule Chunker do
   Returns the data of the chunk with `index` from the given 
   `chunked_file`.
   """
-  @spec chunk(t, integer) :: {:ok, bitstring} | error_tuple
-  defdelegate chunk(chunked_file, index), to: ChunkedFile
+  @spec get_chunk(t, integer) :: {:ok, bitstring} | error_tuple
+  defdelegate get_chunk(chunked_file, index), to: ChunkedFile
 
   @doc """
   Returns the number of individual chunks the given `chunked_file`

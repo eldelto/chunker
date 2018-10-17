@@ -7,12 +7,6 @@ defprotocol Chunker.ChunkedFile do
   @type result :: Chunker.result()
 
   @doc """
-  Appends `data` to the given `chunked_file`.
-  """
-  @spec append_chunk(t, bitstring) :: result
-  def append_chunk(chunked_file, data)
-
-  @doc """
   Inserts `data` to the given `chunked_file` at the position specified
   by `index`.
   """
@@ -30,8 +24,8 @@ defprotocol Chunker.ChunkedFile do
   Returns the data of the chunk with `index` from the given 
   `chunked_file`.
   """
-  @spec chunk(t, integer) :: {:ok, bitstring} | error_tuple
-  def chunk(chunked_file, index)
+  @spec get_chunk(t, integer) :: {:ok, bitstring} | error_tuple
+  def get_chunk(chunked_file, index)
 
   @doc """
   Returns the number of individual chunks the given `chunked_file`

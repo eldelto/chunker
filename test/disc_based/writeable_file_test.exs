@@ -45,7 +45,7 @@ defmodule Chunker.DiscBased.WriteableFileTest do
     assert {:ok, %ReadOnlyFile{}} = Chunker.commit(chunked_file)
 
     assert {:ok, "hello world"} = File.read(@writeable_file_path)
-    assert {:error, :enoent} = File.lstat(@writeable_file_path <> ".chunked")
+    assert {:error, :enoent} = File.lstat(@writeable_file_path <> ".get_chunked")
   end
 
   test "inserting chunk" do
@@ -70,8 +70,8 @@ defmodule Chunker.DiscBased.WriteableFileTest do
     {:ok, _} = Chunker.append_chunk(chunked_file, "hello")
     {:ok, _} = Chunker.append_chunk(chunked_file, "world")
 
-    assert {:ok, "world"} = Chunker.chunk(chunked_file, 1)
-    assert {:error, %InvalidIndexError{}} = Chunker.chunk(chunked_file, 100)
+    assert {:ok, "world"} = Chunker.get_chunk(chunked_file, 1)
+    assert {:error, %InvalidIndexError{}} = Chunker.get_chunk(chunked_file, 100)
   end
 
   test "getting chunk length" do
