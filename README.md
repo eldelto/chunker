@@ -19,7 +19,7 @@ in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:chunker, "~> 0.10.3"}
+    {:chunker, "~> 0.11.0"}
   ]
 end
 ```
@@ -48,7 +48,7 @@ backed by a database) by implementing the protocol `Chunker.ChunkedFile`:
 
 ```elixir
 defimpl Chunker.ChunkedFile, for: CustomChunkedFile do
-  def append_chunk(chunked_file, data) do
+  def insert_chunk(chunked_file, data, index) do
     ...
   end  
   ...  
