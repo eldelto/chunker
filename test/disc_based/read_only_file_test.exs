@@ -52,6 +52,16 @@ defmodule Chunker.DiscBased.ReadOnlyFileTest do
     assert read_only?(Chunker.remove_chunk(chunked_file, 0))
   end
 
+  test "prepending chunk" do
+    chunked_file = new_chunked_file()
+    assert read_only?(Chunker.prepend_chunk(chunked_file, nil))
+  end
+
+  test "replacing chunk" do
+    chunked_file = new_chunked_file()
+    assert read_only?(Chunker.replace_chunk(chunked_file, nil, 0))
+  end
+
   test "writeable?" do
     chunked_file = new_chunked_file()
     assert false == Chunker.writeable?(chunked_file)

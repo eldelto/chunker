@@ -85,6 +85,7 @@ defmodule Chunker.DiscBased.WriteableFileTest do
 
   test "removing chunk" do
     chunked_file = new_chunked_file()
+
     {:ok, _} = Chunker.append_chunk(chunked_file, "hello ")
     {:ok, _} = Chunker.append_chunk(chunked_file, "world")
 
@@ -92,6 +93,30 @@ defmodule Chunker.DiscBased.WriteableFileTest do
     assert {:ok, "1"} = File.read(chunk_map_path(chunked_file))
     {:ok, _} = Chunker.commit(chunked_file)
     assert {:ok, "world"} = File.read(@writeable_file_path)
+  end
+
+  test "prepending chunk" do
+    chunked_file = new_chunked_file()
+
+    {:ok, _} = Chunker.append_chunk(chunked_file, "hello")
+    {:ok, _} = Chunker.append_chunk(chunked_file, "world")
+
+    assert {:ok, _} = Chunker.prepend_chunk(chunked_file, "test")
+    assert {:ok, "test"} = Chunker.get_chunk(chunked_file, 0)
+    assert {:ok, "hello"} = Chunker.get_chunk(chunked_file, 1)
+  end
+
+  test "replacing chunk" do
+    chunked_file = new_chunked_file()
+
+    {:ok, _} = Chunker.append_chunk(chunked_file, "hello")
+    {:ok, _} = Chunker.append_chunk(chunked_file, "world")
+    {:ok, _} = Chunker.append_chunk(chunked_file, "!!!")
+
+    assert {:ok, _} = Chunker.replace_chunk(chunked_file, "test", 1)
+    assert {:ok, "hello"} = Chunker.get_chunk(chunked_file, 0)
+    assert {:ok, "test"} = Chunker.get_chunk(chunked_file, 1)
+    assert {:ok, "!!!"} = Chunker.get_chunk(chunked_file, 2)
   end
 
   test "writeable?" do

@@ -1,10 +1,7 @@
-V1
 # WriteableChunkedFile.
 # ReadonlyChunkedFile.
 # Refactor to protocols.
 # Handle index out of range.
-
-V2
 # Use :ok instead of {:ok, nil}.
 # Use defdelegate where possible.
 # Move implementations into new directory.
@@ -22,9 +19,7 @@ V2
 # Chunker.commit/1 should return a new ChunkedFile.
 # AlreadyClosedError instead of AlreadyCommittedError.
 # Move ReadOnlyError into Chunker.Exceptions module.
-
-V3
 # Use Chunker.ChunkedFile.insert/3, remove/2 & get/2?
-- Add Chunker.replace_chunk/3.
-- Add Chunker.prepend_chunk/2.
+# Add Chunker.replace_chunk/3.
+# Add Chunker.prepend_chunk/2.
 - Refactor to lazy streams.

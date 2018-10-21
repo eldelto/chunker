@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [0.12.0] - 21/10/2018
+
+### Added
+- New function `Chunker.prepend_chunk/2`.
+- New function `Chunker.replace_chunk/3`.
+
 ## [0.11.0] - 17/10/2018
 
 ### Changed

@@ -37,6 +37,25 @@ defmodule Chunker do
   defdelegate remove_chunk(chunked_file, index), to: ChunkedFile
 
   @doc """
+  Prepends `data` to the given `chunked_file`.
+  """
+  @spec prepend_chunk(t, bitstring) :: result
+  def prepend_chunk(chunked_file, data) do
+    insert_chunk(chunked_file, data, 0)
+  end
+
+  @doc """
+  Replaces the chunk with the corresponding `index` with the given `data`.
+  """
+  @spec replace_chunk(t, bitstring, integer) :: result
+  def replace_chunk(chunked_file, data, index) do
+    case remove_chunk(chunked_file, index) do
+      {:ok, chunked_file} -> insert_chunk(chunked_file, data, index)
+      err -> err
+    end
+  end
+
+  @doc """
   Returns the data of the chunk with `index` from the given 
   `chunked_file`.
   """
