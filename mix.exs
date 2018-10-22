@@ -41,7 +41,8 @@ defmodule Chunker.MixProject do
       links: %{
         "GitHub" => "https://github.com/elixir-ecto/postgrex",
         "Online documentation" => "https://hexdocs.pm/chunker"
-      }
+      },
+      maintainers: ["Dominic Aschauer"]
     ]
   end
 end
