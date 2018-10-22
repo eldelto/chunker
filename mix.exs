@@ -39,7 +39,7 @@ defmodule Chunker.MixProject do
     [
       licenses: ["Apache 2.0"],
       links: %{
-        "GitHub" => "https://github.com/elixir-ecto/postgrex"
+        "Gitlab" => "https://gitlab.com/eldelto/chunker"
       },
       maintainers: ["Dominic Aschauer"]
     ]
