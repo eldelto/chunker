@@ -19,7 +19,7 @@ in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:chunker, "~> 0.11.0"}
+    {:chunker, "~> 0.12.0"}
   ]
 end
 ```

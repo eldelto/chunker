@@ -39,7 +39,7 @@ defmodule Chunker.MixProject do
     [
       licenses: ["Apache 2.0"],
       links: %{
-        "Gitlab" => "https://gitlab.com/eldelto/chunker"
+        "GitLab" => "https://gitlab.com/eldelto/chunker"
       },
       maintainers: ["Dominic Aschauer"]
     ]
