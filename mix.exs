@@ -4,13 +4,13 @@ defmodule Chunker.MixProject do
   def project do
     [
       app: :chunker,
-      version: "0.12.0",
-      elixir: "~> 1.6",
+      version: "0.12.1",
+      elixir: "~> 1.10",
       start_permanent: Mix.env() == :prod,
       description: description(),
       package: package(),
       deps: deps(),
-      source_url: "https://gitlab.com/eldelto/chunker"
+      source_url: "https://github.com/eldelto/chunker"
     ]
   end
 
@@ -39,7 +39,7 @@ defmodule Chunker.MixProject do
     [
       licenses: ["Apache 2.0"],
       links: %{
-        "GitLab" => "https://gitlab.com/eldelto/chunker"
+        "Github" => "https://github.com/eldelto/chunker"
       },
       maintainers: ["Dominic Aschauer"]
     ]
